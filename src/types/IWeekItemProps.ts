@@ -1,5 +1,5 @@
-import { IWeek } from ".";
+import { IWeek } from '.'
 
 export interface IWeekItemProps {
-    week: IWeek
-} 
+  week: IWeek
+}

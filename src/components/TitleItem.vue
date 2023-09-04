@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ITitleItemEmits } from './TitleItem';
+import { ITitleItemEmits } from './TitleItem'
 
 defineEmits<ITitleItemEmits>()
 </script>
@@ -11,7 +11,11 @@ defineEmits<ITitleItemEmits>()
     <div class="col-lg-6 mx-auto">
       <p class="lead mb-4">Work <em>Schedule</em></p>
       <div class="gap-2 justify-content-sm-center d-grid d-sm-flex">
-        <button type="button" class="btn btn-primary btn-lg px-4 gap-3" @click="$emit('weekCreated')">
+        <button
+          type="button"
+          class="btn btn-primary btn-lg px-4 gap-3"
+          @click="$emit('weekCreated')"
+        >
           Add new <em>Week</em>
         </button>
       </div>
