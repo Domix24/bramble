@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import NotificationComponent from './components/NotificationItem.vue'
-import TitleComponent from './components/TitleItem.vue'
+import { NotificationComponent, TitleComponent } from './components'
 </script>
 
 <template>
