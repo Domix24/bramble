@@ -18,7 +18,7 @@ defineProps<IWeekItemProps>()
       </button>
     </div>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-      <DayComponent />
+      <DayComponent v-for="(day, index) in week.days" :key="index" :day="day" />
     </div>
   </div>
 </template>

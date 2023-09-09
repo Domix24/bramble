@@ -1,17 +1,23 @@
 import { Time } from '.'
 import { IWeek } from '../types'
+import { createDay } from './day'
 
 export const createWeek = (hour: number | string) => {
   const weekObject = {} as IWeek
+  weekObject.days = []
+  weekObject.hour = Time.toNumber(hour)
 
-  if (typeof hour == 'number') {
-    if ((hour * 100) % 25) throw new Error()
-    weekObject.hour = hour
-  } else {
-    if (!Time.checkHour(hour) && !Time.checkHourMinute(hour)) throw new Error()
-    if (Time.checkHour(hour)) weekObject.hour = Time.getHour(hour)
-    else weekObject.hour = Time.getHourMinute(hour)
-  }
+  const returnFn = (theWeek: IWeek) => ({
+    addDay: (dayName: string, dayHour: number | string) =>
+      returnFn(addDay(theWeek, dayName, dayHour)),
+    getWeek: () => theWeek,
+  })
 
-  return weekObject
+  return returnFn(weekObject)
+}
+
+const addDay = (week: IWeek, dayName: string, dayHour: number | string) => {
+  week.days.push(createDay(dayName, dayHour))
+
+  return week
 }

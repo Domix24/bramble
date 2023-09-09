@@ -1,5 +1,11 @@
 import { describe, expect, test } from 'vitest'
-import { checkHour, checkHourMinute, getHour, getHourMinute } from './time'
+import {
+  checkHour,
+  checkHourMinute,
+  getHour,
+  getHourMinute,
+  toNumber,
+} from './time'
 
 const quarters = ['15', '30', '45']
 
@@ -230,6 +236,86 @@ describe('gethourminute', () => {
       x.values.forEach((y) => {
         expect(() => getHourMinute(y)).toThrow()
       })
+    })
+  })
+})
+describe('tonumber', () => {
+  test('principal', () => {
+    expect(toNumber).toBeTruthy()
+  })
+
+  describe('number, test % 25', () => {
+    Array(100)
+      .fill(0)
+      .map((_, i) => i / 100)
+      .forEach((x) => {
+        if (x % 0.25) {
+          test(`error`, () => {
+            expect(() => toNumber(x)).toThrow()
+          })
+        } else {
+          test(`ok`, () => {
+            expect(toNumber(x)).toEqual(x)
+          })
+        }
+      })
+  })
+
+  describe('string', () => {
+    describe('hour only', () => {
+      Array(100)
+        .fill(0)
+        .map((_, i) => i)
+        .forEach((x) => {
+          test('single hour, ok', () => {
+            expect(toNumber(`${x}h`)).toEqual(x)
+            expect(toNumber(`${x}`)).toEqual(x)
+          })
+          if (`${x}`.length == 1) {
+            test('single hour starting with zero, error', () => {
+              expect(() => toNumber(`0${x}h`)).toThrow()
+              expect(() => toNumber(`0${x}`)).toThrow()
+            })
+          } else {
+            test('3 digit hour, error', () => {
+              expect(() => toNumber(`${x % 9}${x}h`)).toThrow()
+              expect(() => toNumber(`${x % 9}${x}`)).toThrow()
+            })
+          }
+        })
+    })
+    describe('hour minute only', () => {
+      Array(7)
+        .fill(0)
+        .map((_, i) => i + 1)
+        .forEach((x) => {
+          const m1 = x * 0.125
+          const m2 = (x * 7.5 + '').split('.')[0].padStart(2, '0')
+          Array(100)
+            .fill(0)
+            .map((_, i) => i)
+            .forEach((y) => {
+              if (m1 % 0.25) {
+                // `${x}`
+                test(`${y}h${m2}, error (wrong minute)`, () => {
+                  expect(() => toNumber(`${y}h${m2}`)).toThrow()
+                })
+              } else {
+                test(`${y}h${m2}, ok`, () => {
+                  expect(toNumber(`${y}h${m2}`)).toEqual(y + m1)
+                })
+              }
+              if (`${y}`.length == 1) {
+                test(`0${y}h${m2}, error (two length starting with zero)`, () => {
+                  expect(() => toNumber(`0${y}h${m2}`)).toThrow()
+                })
+              } else {
+                test(`${y % 10}${y}h${m2}, error (three length)`, () => {
+                  expect(() => toNumber(`0${y}h${m2}`)).toThrow()
+                })
+              }
+            })
+        })
     })
   })
 })

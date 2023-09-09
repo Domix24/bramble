@@ -5,30 +5,44 @@ describe('showHourMinute', () => {
   test('principal', () => {
     expect(createWeek).toBeTruthy()
   })
-  describe('createweek with number week', () => {
-    test('create week 10h', () => expect(createWeek(10).hour).toEqual(10))
-    test('create week 10h15', () =>
-      expect(createWeek(10.25).hour).toEqual(10.25))
-    test('create week 10h30', () => expect(createWeek(10.5).hour).toEqual(10.5))
-    test('create week 10h45', () =>
-      expect(createWeek(10.75).hour).toEqual(10.75))
-    //--
-    test('create week wrong minute', () =>
-      expect(() => createWeek(10.7)).toThrow())
+  describe('createweek', () => {
+    test('10h', () => expect(createWeek('10h').getWeek().hour).toEqual(10))
+    test('3h', () => expect(createWeek(3).getWeek().hour).toEqual(3))
   })
-  describe('createweek with string week', () => {
-    test('create week 10h', () => {
-      expect(createWeek('10h').hour).toEqual(10)
-      expect(createWeek('10').hour).toEqual(10)
+  describe('createweek daychaining', () => {
+    test('createweek with 0 days', () => {
+      const week = createWeek('10h')
+
+      expect(week.getWeek().days.length).toEqual(0)
     })
-    test('create week 10h15', () =>
-      expect(createWeek('10h15').hour).toEqual(10.25))
-    test('create week 10h30', () =>
-      expect(createWeek('10h30').hour).toEqual(10.5))
-    test('create week 10h45', () =>
-      expect(createWeek('10h45').hour).toEqual(10.75))
-    //--
-    test('create week wrong string', () =>
-      expect(() => createWeek('afafa')).toThrow())
+    test('createweek with 1 days - method #1', () => {
+      const week = createWeek('10h').addDay('a', 1)
+
+      expect(week.getWeek().days.length).toEqual(1)
+    })
+    test('createweek with 1 days - method #2', () => {
+      const week = createWeek('10h')
+      week.addDay('a', 1)
+
+      expect(week.getWeek().days.length).toEqual(1)
+    })
+    test('createweek with 2 days - method #1', () => {
+      const week = createWeek('10h').addDay('a', 1).addDay('b', 2)
+
+      expect(week.getWeek().days.length).toEqual(2)
+    })
+    test('createweek with 2 days - method #2', () => {
+      const week = createWeek('10h').addDay('a', 1)
+      week.addDay('b', 2)
+
+      expect(week.getWeek().days.length).toEqual(2)
+    })
+    test('createweek with 2 days - method #3', () => {
+      const week = createWeek('10h')
+      week.addDay('a', 1)
+      week.addDay('b', 2)
+
+      expect(week.getWeek().days.length).toEqual(2)
+    })
   })
 })

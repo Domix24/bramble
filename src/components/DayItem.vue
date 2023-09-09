@@ -1,7 +1,16 @@
+<script setup lang="ts">
+import { Display } from '../functions'
+import { IDayItemProps } from '../types'
+
+defineProps<IDayItemProps>()
+</script>
+
 <template>
   <div class="col">
     <div class="card">
-      <div class="card-header">Day (xh)</div>
+      <div class="card-header">
+        {{ day.name }} ({{ Display.showHourMinute(day.hour) }})
+      </div>
       <div class="card-body">
         <h5 class="card-title">00:00:00 &Rarr; 00:00:00</h5>
         <p class="card-text">00:00:00 &Rarr; 00:00:00</p>
