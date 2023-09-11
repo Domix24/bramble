@@ -6,7 +6,7 @@ import {
 } from './components'
 import { Week } from './functions'
 
-const week = Week.createWeek('0')
+const week = Week.createWeek('7').addDay('day', '5').getWeek()
 </script>
 
 <template>

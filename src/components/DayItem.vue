@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { Display } from '../functions'
 import { IDayItemProps } from '../types'
+import { DayFunctions } from '.'
+
+const { dayStart, dayStop, lunchStart, lunchStop } = DayFunctions
 
 defineProps<IDayItemProps>()
 </script>
@@ -8,20 +11,77 @@ defineProps<IDayItemProps>()
 <template>
   <div class="col">
     <div class="card">
-      <div class="card-header">
-        {{ day.name }} ({{ Display.showHourMinute(day.hour) }})
+      <div
+        v-if="
+          isNaN(day.hour.confirmed) || day.hour.confirmed == day.hour.planned
+        "
+        class="card-header"
+      >
+        {{ day.name }} ({{ Display.showHourMinute(day.hour.planned) }})
+      </div>
+      <div
+        v-else-if="day.hour.confirmed != day.hour.planned"
+        class="card-header"
+      >
+        {{ day.name }}
+        <s>({{ Display.showHourMinute(day.hour.planned) }})</s> ({{
+          Display.showHourMinute(day.hour.confirmed)
+        }})
       </div>
       <div class="card-body">
-        <h5 class="card-title">00:00:00 &Rarr; 00:00:00</h5>
-        <p class="card-text">00:00:00 &Rarr; 00:00:00</p>
-        <div class="d-flex gap-2 flex-wrap">
-          <button class="btn btn-success">
+        <h5
+          v-if="dayStop && dayStart && lunchStart && lunchStop"
+          class="card-title"
+        >
+          {{ Display.showDate(dayStart) }} &Rarr;
+          {{ Display.showDate(dayStop) }} ({{
+            Display.showHourMinuteFromOperation(DayFunctions.getDayTotal())
+          }})
+        </h5>
+        <h5 v-else-if="dayStart && lunchStart && lunchStop" class="card-title">
+          {{ Display.showDate(dayStart) }} &Rarr;
+          <em>{{
+            Display.showDate(DayFunctions.getEstimatedTime({ day }))
+          }}</em>
+        </h5>
+        <h5 v-else-if="dayStart" class="card-title">
+          {{ Display.showDate(dayStart) }}
+        </h5>
+        <p v-if="lunchStop && lunchStart" class="card-text">
+          {{ Display.showDate(lunchStart) }} &Rarr;
+          {{ Display.showDate(lunchStop) }} ({{
+            Display.showMinuteFromOperation(DayFunctions.getLunchDiff())
+          }})
+        </p>
+        <p v-else-if="lunchStart" class="card-text">
+          {{ Display.showDate(lunchStart) }}
+        </p>
+        <div v-if="!dayStop" class="d-flex gap-2 flex-wrap">
+          <button
+            v-if="!lunchStart"
+            class="btn btn-success"
+            @click="DayFunctions.onStart"
+          >
             <i class="bi bi-play"></i>
-            <span class="d-none d-md-inline">Start</span>
+            <span v-if="!dayStart" class="d-none d-md-inline">Start Day</span>
+            <span v-else class="d-none d-md-inline">Start Lunch</span>
           </button>
-          <button class="btn btn-danger">
+          <button
+            v-else
+            class="btn btn-danger"
+            @click="() => DayFunctions.onStop({ day })"
+          >
             <i class="bi bi-pause"></i>
-            <span class="d-none d-md-inline">Stop</span>
+            <span v-if="!lunchStop" class="d-none d-md-inline">Stop Lunch</span>
+            <span v-else class="d-none d-md-inline">Stop Day</span>
+          </button>
+          <button
+            v-if="lunchStop"
+            class="btn btn-danger"
+            @click="() => DayFunctions.onStopExact({ day })"
+          >
+            <i class="bi bi-stop"></i>
+            <span class="d-none d-md-inline">Stop Exact</span>
           </button>
         </div>
       </div>

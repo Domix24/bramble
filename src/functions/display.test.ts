@@ -1,5 +1,10 @@
 import { describe, expect, test } from 'vitest'
-import { showHourMinute } from './display'
+import {
+  showDate,
+  showHourMinute,
+  showHourMinuteFromOperation,
+  showMinuteFromOperation,
+} from './display'
 
 describe('showHourMinute', () => {
   test('principal', () => {
@@ -56,4 +61,64 @@ describe('showHourMinute', () => {
       })
     })
   })
+})
+describe('showDate', () => {
+  test('principal', () => {
+    expect(showDate).toBeTruthy()
+  })
+  Array(30)
+    .fill(0)
+    .map((_, index) => index)
+    .map(
+      () =>
+        new Date(
+          Math.floor(
+            Math.random() * (9999999999999 - 1000000000000 + 1) + 1000000000000,
+          ),
+        ),
+    )
+    .map((value) =>
+      Math.floor(Math.random() * (5 - 2 + 1) + 2) == 4 ? undefined : value,
+    )
+    .forEach((value, index) => {
+      test(`Run #${index} - ${value}`, () => {
+        if (value) expect(showDate(value).length).toBeGreaterThan(0)
+        else expect(showDate(value).length).toEqual(0)
+      })
+    })
+})
+describe('showMinuteFromOperation', () => {
+  test('principal', () => {
+    expect(showMinuteFromOperation).toBeTruthy()
+  })
+  Array(30)
+    .fill(0)
+    .map((_, index) => index)
+    .map(() => Math.floor(Math.random() * (12000000 - 0 + 1) + 0))
+    .forEach((value, index) => {
+      const result = showMinuteFromOperation(value)
+      test(`Run #${index} - ${value} - (${result})`, () => {
+        expect(result.length).toBeGreaterThan(1)
+        expect(result).toBeTruthy()
+
+        if (value < 60000) expect(result.endsWith('1m')).toBeTruthy()
+        else expect(/^[1-9][0-9]*m$/.test(result)).toBeTruthy()
+      })
+    })
+})
+describe('showHourMinuteFromOperation', () => {
+  test('principal', () => {
+    expect(showHourMinuteFromOperation).toBeTruthy()
+  })
+  Array(30)
+    .fill(0)
+    .map((_, index) => index)
+    .map(() => Math.floor(Math.random() * (12000000 - 0 + 1) + 0))
+    .forEach((value, index) => {
+      const result = showHourMinuteFromOperation(value)
+      test(`Run #${index} - ${value} - (${result})`, () => {
+        expect(result.length).toBeGreaterThan(4)
+        expect(result.endsWith('m')).toBeTruthy()
+      })
+    })
 })

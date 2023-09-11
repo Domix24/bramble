@@ -8,3 +8,15 @@ export const showHourMinute = (number: number) => {
 
   return text
 }
+
+export const showDate = (date: Date | undefined) =>
+  date ? date.toLocaleTimeString([], { timeStyle: 'short' }) : ''
+
+export const showMinuteFromOperation = (number: number) =>
+  `${parseInt(number / 60000 + '')}m`
+
+export const showHourMinuteFromOperation = (number: number) =>
+  `${parseInt(number / 3600000 + '')}h${(
+    (parseInt(number / 60000 + '') % 60) +
+    ''
+  ).padStart(2, '0')}m`
