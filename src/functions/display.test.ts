@@ -100,8 +100,9 @@ describe('showMinuteFromOperation', () => {
       test(`Run #${index} - ${value} - (${result})`, () => {
         expect(result.length).toBeGreaterThan(1)
         expect(result).toBeTruthy()
+        expect(result.endsWith('m')).toBeTruthy()
 
-        if (value < 60000) expect(result.endsWith('1m')).toBeTruthy()
+        if (value < 60000) expect(result).toEqual('0m')
         else expect(/^[1-9][0-9]*m$/.test(result)).toBeTruthy()
       })
     })
@@ -113,12 +114,14 @@ describe('showHourMinuteFromOperation', () => {
   Array(30)
     .fill(0)
     .map((_, index) => index)
-    .map(() => Math.floor(Math.random() * (12000000 - 0 + 1) + 0))
+    .map(() => Math.floor(Math.random() * (48000000 - 0 + 1) + 0))
     .forEach((value, index) => {
       const result = showHourMinuteFromOperation(value)
       test(`Run #${index} - ${value} - (${result})`, () => {
         expect(result.length).toBeGreaterThan(4)
         expect(result.endsWith('m')).toBeTruthy()
+        expect(result.includes('h')).toBeTruthy()
+        expect(/([0-9]|[1-9][0-9]*)h[0-9]{2}m/.test(result)).toBeTruthy()
       })
     })
 })

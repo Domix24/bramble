@@ -3,7 +3,8 @@ import { Display } from '../functions'
 import { IDayItemProps } from '../types'
 import { DayFunctions } from '.'
 
-const { dayStart, dayStop, lunchStart, lunchStop } = DayFunctions
+const main = DayFunctions.main()
+const { dayStart, dayStop, lunchStart, lunchStop } = main
 
 defineProps<IDayItemProps>()
 </script>
@@ -35,14 +36,12 @@ defineProps<IDayItemProps>()
         >
           {{ Display.showDate(dayStart) }} &Rarr;
           {{ Display.showDate(dayStop) }} ({{
-            Display.showHourMinuteFromOperation(DayFunctions.getDayTotal())
+            Display.showHourMinuteFromOperation(main.getDayTotal())
           }})
         </h5>
         <h5 v-else-if="dayStart && lunchStart && lunchStop" class="card-title">
           {{ Display.showDate(dayStart) }} &Rarr;
-          <em>{{
-            Display.showDate(DayFunctions.getEstimatedTime({ day }))
-          }}</em>
+          <em>{{ Display.showDate(main.getEstimatedTime({ day })) }}</em>
         </h5>
         <h5 v-else-if="dayStart" class="card-title">
           {{ Display.showDate(dayStart) }}
@@ -50,7 +49,7 @@ defineProps<IDayItemProps>()
         <p v-if="lunchStop && lunchStart" class="card-text">
           {{ Display.showDate(lunchStart) }} &Rarr;
           {{ Display.showDate(lunchStop) }} ({{
-            Display.showMinuteFromOperation(DayFunctions.getLunchDiff())
+            Display.showMinuteFromOperation(main.getLunchDiff())
           }})
         </p>
         <p v-else-if="lunchStart" class="card-text">
@@ -60,7 +59,7 @@ defineProps<IDayItemProps>()
           <button
             v-if="!lunchStart"
             class="btn btn-success"
-            @click="DayFunctions.onStart"
+            @click="main.onStart"
           >
             <i class="bi bi-play"></i>
             <span v-if="!dayStart" class="d-none d-md-inline">Start Day</span>
@@ -69,7 +68,7 @@ defineProps<IDayItemProps>()
           <button
             v-else
             class="btn btn-danger"
-            @click="() => DayFunctions.onStop({ day })"
+            @click="() => main.onStop({ day })"
           >
             <i class="bi bi-pause"></i>
             <span v-if="!lunchStop" class="d-none d-md-inline">Stop Lunch</span>
@@ -78,7 +77,7 @@ defineProps<IDayItemProps>()
           <button
             v-if="lunchStop"
             class="btn btn-danger"
-            @click="() => DayFunctions.onStopExact({ day })"
+            @click="() => main.onStopExact({ day })"
           >
             <i class="bi bi-stop"></i>
             <span class="d-none d-md-inline">Stop Exact</span>
