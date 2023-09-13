@@ -12,7 +12,18 @@ WeekFunctions.setWeek(props.week)
 <template>
   <div class="px-4 py-5 my-5">
     <h1
-      v-if="WeekFunctions.getHours() != week.hour"
+      v-if="
+        WeekFunctions.getHours() != week.hour &&
+        WeekFunctions.getDifference() != week.hour
+      "
+      class="display-5 fw-bold text-body-emphasis"
+    >
+      Week {{ Display.showHourMinute(WeekFunctions.getHours()) }} /
+      {{ Display.showHourMinute(week.hour) }} ({{ WeekFunctions.getSign()
+      }}{{ Display.showHourMinute(WeekFunctions.getDifference()) }})
+    </h1>
+    <h1
+      v-else-if="WeekFunctions.getHours() != week.hour"
       class="display-5 fw-bold text-body-emphasis"
     >
       Week {{ Display.showHourMinute(WeekFunctions.getHours()) }} /

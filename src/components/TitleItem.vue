@@ -4,7 +4,10 @@
     <h1 class="display-5 fw-bold text-body-emphasis">bramble.</h1>
     <div class="col-lg-6 mx-auto">
       <p class="lead mb-4">Work <em>Schedule</em></p>
-      <div class="gap-2 justify-content-sm-center d-grid d-sm-flex">
+      <div
+        v-if="false"
+        class="gap-2 justify-content-sm-center d-grid d-sm-flex"
+      >
         <button type="button" class="btn btn-primary btn-lg px-4 gap-3">
           Add new <em>Week</em>
         </button>

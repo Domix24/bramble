@@ -14,7 +14,7 @@ const week = Week.createWeek('7')
 
 <template>
   <main>
-    <NotificationComponent />
+    <NotificationComponent v-if="false" />
     <TitleComponent />
     <WeekComponent :week="week" />
   </main>
