@@ -10,8 +10,8 @@ defineProps<IDayItemProps>()
 </script>
 
 <template>
-  <div class="col">
-    <div class="card">
+  <div class="col d-flex">
+    <div class="card" style="flex: 0 0 100%">
       <div
         v-if="
           isNaN(day.hour.confirmed) || day.hour.confirmed == day.hour.planned
