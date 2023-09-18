@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
-import App from './App.vue'
+import { AppComponent } from './components'
 import 'bootstrap'
 import 'bootstrap-icons/font/bootstrap-icons.min.css'
 import './scss/style.scss'
 
-createApp(App).mount('#app')
+createApp(AppComponent).mount('#app')

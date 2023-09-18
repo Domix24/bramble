@@ -1,23 +1,26 @@
 import { ref } from 'vue'
-import { IDay, IWeek } from '../types'
+import { IWeek } from '../types'
 
-export const days = ref([] as IDay[])
-export const hour = ref(0)
+export const main = (week: IWeek) => {
+  const inside = {
+    hour: ref(week.hour),
+    days: ref(week.days),
 
-export const setWeek = (week: IWeek) => {
-  days.value = week.days
-  hour.value = week.hour
+    /*update: (week: IWeek) => {
+      return main(week)
+    },*/
+
+    getHours: () => {
+      const result = inside.days.value.reduce(
+        (p, c) => p + (c.hour.confirmed ? c.hour.confirmed : 0),
+        0,
+      )
+
+      return result ? result : 0
+    },
+    getDifference: () => Math.abs(inside.getHours() - inside.hour.value),
+    getSign: () => (inside.getHours() - inside.hour.value > 0 ? '+' : '-'),
+  }
+
+  return inside
 }
-
-export const getHours = () => {
-  const result = days.value.reduce(
-    (p, c) => p + (c.hour.confirmed ? c.hour.confirmed : 0),
-    0,
-  )
-
-  return result ? result : 0
-}
-
-export const getDifference = () => Math.abs(getHours() - hour.value)
-
-export const getSign = () => (getHours() - hour.value > 0 ? '+' : '-')

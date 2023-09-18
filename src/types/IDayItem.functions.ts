@@ -1,4 +1,4 @@
-import { Ref } from 'vue'
+import { Ref, WritableComputedRef } from 'vue'
 import { IDayItemProps } from '.'
 
 export interface IDayItemFunctions {
@@ -7,6 +7,12 @@ export interface IDayItemFunctions {
 
   lunchStart: Ref<undefined | Date>
   lunchStop: Ref<undefined | Date>
+
+  dayStartC: WritableComputedRef<undefined | Date>
+  dayStopC: WritableComputedRef<undefined | Date>
+
+  lunchStartC: WritableComputedRef<undefined | Date>
+  lunchStopC: WritableComputedRef<undefined | Date>
 
   onStart: () => void
   onStop: (dayO: IDayItemProps) => void
@@ -17,4 +23,5 @@ export interface IDayItemFunctions {
   getEstimatedTime: (dayO: IDayItemProps) => Date
 
   _updateDayStop: (dayO: IDayItemProps, newDate: Date) => void
+  _update: () => void
 }
