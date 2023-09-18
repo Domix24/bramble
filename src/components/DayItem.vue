@@ -62,8 +62,10 @@ defineProps<IDayItemProps>()
             @click="main.onStart"
           >
             <i class="bi bi-play"></i>
-            <span v-if="!dayStart" class="d-none d-md-inline">Start Day</span>
-            <span v-else class="d-none d-md-inline">Start Lunch</span>
+            <span v-if="!dayStart" class="d-none d-md-inline ps-1"
+              >Start Day</span
+            >
+            <span v-else class="d-none d-md-inline ps-1">Start Lunch</span>
           </button>
           <button
             v-else
@@ -71,8 +73,10 @@ defineProps<IDayItemProps>()
             @click="() => main.onStop({ day })"
           >
             <i class="bi bi-pause"></i>
-            <span v-if="!lunchStop" class="d-none d-md-inline">Stop Lunch</span>
-            <span v-else class="d-none d-md-inline">Stop Day</span>
+            <span v-if="!lunchStop" class="d-none d-md-inline ps-1"
+              >Stop Lunch</span
+            >
+            <span v-else class="d-none d-md-inline ps-1">Stop Day</span>
           </button>
           <button
             v-if="lunchStop"
@@ -80,7 +84,7 @@ defineProps<IDayItemProps>()
             @click="() => main.onStopExact({ day })"
           >
             <i class="bi bi-stop"></i>
-            <span class="d-none d-md-inline">Stop Exact</span>
+            <span class="d-none d-md-inline ps-1">Stop Exact</span>
           </button>
         </div>
       </div>

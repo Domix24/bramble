@@ -35,7 +35,11 @@ WeekFunctions.setWeek(props.week)
     <div class="my-3 d-flex gap-2 flex-wrap">
       <button class="btn btn-warning">
         <i class="bi bi-pencil"></i>
-        <span class="d-none d-md-inline">Edit</span>
+        <span class="d-none d-md-inline ps-1">Edit</span>
+      </button>
+      <button class="btn btn-primary">
+        <i class="bi bi-plus"></i>
+        <span class="d-none d-md-inline ps-1">Add</span>
       </button>
     </div>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
