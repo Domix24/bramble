@@ -35,8 +35,10 @@ describe('WeekFunctions', () => {
       })
     afterEach((context) => {
       week.addDay(
-        `Day #${context.task.name.slice(-1)}`,
-        Math.floor(Math.random() * (5 - 2 + 1) + 2),
+        Day.createDay(
+          `Day #${context.task.name.slice(-1)}`,
+          Math.floor(Math.random() * (5 - 2 + 1) + 2),
+        ),
       )
     })
   })
@@ -65,7 +67,7 @@ describe('WeekFunctions', () => {
     afterEach((context) => {
       const nbHours = Math.floor(Math.random() * (5 - 2 + 1) + 2)
 
-      week.addDay(`Day #${context.task.name.slice(-1)}`, nbHours)
+      week.addDay(Day.createDay(`Day #${context.task.name.slice(-1)}`, nbHours))
     })
   })
   describe('getDifference', () => {
