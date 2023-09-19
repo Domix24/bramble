@@ -1,18 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import {
+  AppFunctions,
   NotificationComponent,
   TitleComponent,
   WeekComponent,
-} from './components'
-import { Day, Week } from './functions'
+} from '.'
 
-const week = ref(
-  Week.createWeek('7')
-    .addDay(Day.createDay('day1', '5'))
-    .addDay(Day.createDay('day2', '6'))
-    .getWeek(),
-)
+const main = AppFunctions.main()
+const { week } = main
 </script>
 
 <template>
