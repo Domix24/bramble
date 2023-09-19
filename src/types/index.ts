@@ -1,5 +1,7 @@
 export { type IWeek } from './IWeek'
+export { type IWeekItemEmits } from './IWeekItem.emits'
 export { type IWeekItemProps } from './IWeekItem.props'
+export { type IWeekItemFunctions } from './IWeekItem.functions'
 export { type IDay } from './IDay'
 export { type IDayItemProps } from './IDayItem.props'
 export { type IDayItemFunctions } from './IDayItem.functions'

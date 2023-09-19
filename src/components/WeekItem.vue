@@ -1,36 +1,34 @@
 <script setup lang="ts">
 import { DayComponent, WeekFunctions } from '.'
 import { Display } from '../functions'
-import { IWeekItemProps } from '../types'
+import { IWeekItemEmits, IWeekItemProps } from '../types'
 
 const props = defineProps<IWeekItemProps>()
-const { days } = WeekFunctions
+const emits = defineEmits<IWeekItemEmits>()
 
-WeekFunctions.setWeek(props.week)
+const main = WeekFunctions.main(props, emits)
+const { daysC: days, hourC: hour } = main
 </script>
 
 <template>
   <div class="px-4 py-5 my-5">
     <h1
-      v-if="
-        WeekFunctions.getHours() != week.hour &&
-        WeekFunctions.getDifference() != week.hour
-      "
+      v-if="main.getHours() != hour && main.getDifference() != hour"
       class="display-5 fw-bold text-body-emphasis"
     >
-      Week {{ Display.showHourMinute(WeekFunctions.getHours()) }} /
-      {{ Display.showHourMinute(week.hour) }} ({{ WeekFunctions.getSign()
-      }}{{ Display.showHourMinute(WeekFunctions.getDifference()) }})
+      Week {{ Display.showHourMinute(main.getHours()) }} /
+      {{ Display.showHourMinute(hour) }} ({{ main.getSign()
+      }}{{ Display.showHourMinute(main.getDifference()) }})
     </h1>
     <h1
-      v-else-if="WeekFunctions.getHours() != week.hour"
+      v-else-if="main.getHours() != hour"
       class="display-5 fw-bold text-body-emphasis"
     >
-      Week {{ Display.showHourMinute(WeekFunctions.getHours()) }} /
-      {{ Display.showHourMinute(week.hour) }}
+      Week {{ Display.showHourMinute(main.getHours()) }} /
+      {{ Display.showHourMinute(hour) }}
     </h1>
     <h1 v-else class="display-5 fw-bold text-body-emphasis">
-      Week {{ Display.showHourMinute(week.hour) }}
+      Week {{ Display.showHourMinute(hour) }}
     </h1>
     <div class="my-3 d-flex gap-2 flex-wrap">
       <button class="btn btn-warning">
