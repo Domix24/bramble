@@ -7,3 +7,5 @@ export { default as DayComponent } from './DayItem.vue'
 export * as WeekFunctions from './WeekItem.functions'
 export * as AppFunctions from './AppItem.functions'
 export * as DayFunctions from './DayItem.functions'
+
+export * as CreateGroup from './create'

@@ -1,3 +1,4 @@
+export { type IDexieWeek } from './IDexieWeek'
 export { type IWeek } from './IWeek'
 export { type IWeekItemEmits } from './IWeekItem.emits'
 export { type IWeekItemProps } from './IWeekItem.props'

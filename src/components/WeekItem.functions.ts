@@ -5,6 +5,7 @@ import {
   IWeekItemFunctions,
   IWeekItemProps,
 } from '../types'
+import { Week } from '../functions'
 
 export const getHours = (days: IDay[]) => {
   const result = days.reduce(
@@ -22,7 +23,7 @@ export const getSign = (days: IDay[], hour: number) =>
   getHours(days) - hour > 0 ? '+' : '-'
 
 export const main = (props: IWeekItemProps, emits: IWeekItemEmits) => {
-  const inside = {
+  const inside: IWeekItemFunctions = {
     days: ref(props.week.days),
     hour: ref(props.week.hour),
 
@@ -54,12 +55,13 @@ export const main = (props: IWeekItemProps, emits: IWeekItemEmits) => {
     },
 
     emitUpdate: () => {
-      emits('update:week', {
-        days: inside.daysC.value,
-        hour: inside.hourC.value,
-      })
+      const week = Week.createWeek(inside.hourC.value)
+        .setId(props.week.id)
+        .getWeek()
+      week.days = inside.daysC.value
+      emits('update:week', Week.createWeek(0).getWeek())
     },
-  } as IWeekItemFunctions
+  }
 
   return inside
 }

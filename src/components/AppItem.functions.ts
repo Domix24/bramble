@@ -1,16 +1,57 @@
-import { ref } from 'vue'
-import { Day, Week } from '../functions'
-import { IAppItemFunctions } from '../types'
+import { onMounted, ref, watch } from 'vue'
+import { Database, Week } from '../functions'
+import { IAppItemFunctions, IDexieWeek } from '../types'
 
-export const main = () => {
-  const inside = {
-    week: ref(
-      Week.createWeek('7h')
-        .addDay(Day.createDay('day1', '5h'))
-        .addDay(Day.createDay('day2', '6h'))
-        .getWeek(),
-    ),
-  } as IAppItemFunctions
+const defaultWeek = Week.createWeek(0).getWeek()
+
+export const editWeek = (
+  database: Database.BrambleDatabase,
+  week: IDexieWeek,
+) => {
+  database.editWeek(week)
+}
+
+export const main = (bypassMount?: boolean) => {
+  const inside: IAppItemFunctions = {
+    week: ref(defaultWeek),
+    createdWeek: ref(undefined),
+    db: new Database.BrambleDatabase(),
+    editWeek: () => {
+      inside.week.value.id = 1
+      editWeek(inside.db, Week.normalToDexie(inside.week.value))
+    },
+    //
+    doUpdateWeek: (week) => {
+      inside.createdWeek.value = week
+    },
+    doCloseWeek: () => {
+      if (inside.createdWeek.value && inside.createdWeek.value.edit.update) {
+        inside.week.value = inside.createdWeek.value
+        inside.week.value.edit.update = false
+      }
+      inside.createdWeek.value = undefined
+    },
+    //
+    _watch: () => {
+      inside.editWeek()
+    },
+    _mount: () => {
+      inside.db.getWeek(1).then((value) => {
+        if (value) {
+          inside.week.value = Week.dexieToNormal(value)
+        } else {
+          inside.editWeek()
+        }
+      })
+    },
+  }
+
+  watch(inside.week.value, inside._watch)
+  watch(inside.week, inside._watch)
+
+  if (!bypassMount) {
+    onMounted(inside._mount)
+  }
 
   return inside
 }
