@@ -23,7 +23,7 @@ export const getSign = (days: IDay[], hour: number) =>
   getHours(days) - hour > 0 ? '+' : '-'
 
 export const addEmptyDay = (days: IDay[]) => {
-  days.push(Day.createDay('', 0))
+  days.push(Day.getEmptyDay())
   return days
 }
 

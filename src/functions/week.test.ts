@@ -32,7 +32,7 @@ describe('createWeek', () => {
       expect(week.getWeek().days.length).toEqual(0)
     })
     test('createweek with 1 days - method #1', () => {
-      const week = createWeek('10h').addDay(createDay('a', 1))
+      const week = createWeek('10h').addDay(createDay('a', 1).getDay())
 
       expect(week.getWeek().days.length).toEqual(1)
       expect(week.getWeek().days[0].hour.confirmed).toBeUndefined()
@@ -42,7 +42,7 @@ describe('createWeek', () => {
     })
     test('createweek with 1 days - method #2', () => {
       const week = createWeek('10h')
-      week.addDay(createDay('a', 1))
+      week.addDay(createDay('a', 1).getDay())
 
       expect(week.getWeek().days.length).toEqual(1)
       expect(week.getWeek().days[0].hour.confirmed).toBeUndefined()
@@ -52,8 +52,8 @@ describe('createWeek', () => {
     })
     test('createweek with 2 days - method #1', () => {
       const week = createWeek('10h')
-        .addDay(createDay('a', 1))
-        .addDay(createDay('b', 2))
+        .addDay(createDay('a', 1).getDay())
+        .addDay(createDay('b', 2).getDay())
 
       expect(week.getWeek().days.length).toEqual(2)
       expect(week.getWeek().days[0].hour.confirmed).toBeUndefined()
@@ -65,8 +65,8 @@ describe('createWeek', () => {
       expect(week.getWeek().days[2]).toBeUndefined()
     })
     test('createweek with 2 days - method #2', () => {
-      const week = createWeek('10h').addDay(createDay('a', 1))
-      week.addDay(createDay('b', 2))
+      const week = createWeek('10h').addDay(createDay('a', 1).getDay())
+      week.addDay(createDay('b', 2).getDay())
 
       expect(week.getWeek().days.length).toEqual(2)
       expect(week.getWeek().days[0].hour.confirmed).toBeUndefined()
@@ -79,8 +79,8 @@ describe('createWeek', () => {
     })
     test('createweek with 2 days - method #3', () => {
       const week = createWeek('10h')
-      week.addDay(createDay('a', 1))
-      week.addDay(createDay('b', 2))
+      week.addDay(createDay('a', 1).getDay())
+      week.addDay(createDay('b', 2).getDay())
 
       expect(week.getWeek().days.length).toEqual(2)
       expect(week.getWeek().days[0].hour.confirmed).toBeUndefined()

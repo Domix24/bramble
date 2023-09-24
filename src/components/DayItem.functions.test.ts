@@ -102,7 +102,7 @@ describe('DayFunctions', () => {
         test(`run #${x}`, () => {
           const onStopSpy = vi.fn(main.onStop)
           for (let i = 0; i < x + 1; i++)
-            onStopSpy({ day: Day.createDay('', 5) })
+            onStopSpy({ day: Day.createDay('', 5).getDay() })
 
           expect(onStopSpy).toBeCalledTimes(x + 1)
           expect(main.lunchStop.value).toBeTruthy()
@@ -118,7 +118,7 @@ describe('DayFunctions', () => {
         const main = DayFunctions.main()
         v.forEach((x) => x.f(main))
 
-        const oProps = { day: Day.createDay('', 5) }
+        const oProps = { day: Day.createDay('', 5).getDay() }
         main.onStopExact(oProps)
 
         expect(main.dayStop.value).toBeTruthy()
@@ -135,7 +135,7 @@ describe('DayFunctions', () => {
         const main = DayFunctions.main()
         v.forEach((x) => x.f(main))
 
-        const oProps = { day: Day.createDay('', 5) }
+        const oProps = { day: Day.createDay('', 5).getDay() }
 
         if (i == 3)
           expect(main.getEstimatedTime(oProps).getTime()).not.toBeNaN()
@@ -171,7 +171,7 @@ describe('DayFunctions', () => {
           const main = DayFunctions.main()
           v.forEach((x) => x.f(main))
 
-          const oProps = { day: Day.createDay('', 0) }
+          const oProps = { day: Day.createDay('', 0).getDay() }
 
           main._updateDayStop(oProps, w)
 

@@ -41,7 +41,9 @@ describe('WeekFunctions', () => {
     afterEach((context) => {
       const nbHours = Math.floor(Math.random() * (5 - 2 + 1) + 2)
 
-      days.push(Day.createDay(`Day #${context.task.name.slice(-1)}`, nbHours))
+      days.push(
+        Day.createDay(`Day #${context.task.name.slice(-1)}`, nbHours).getDay(),
+      )
     })
   })
   describe('getDifference - getSign', () => {
@@ -62,8 +64,8 @@ describe('WeekFunctions', () => {
 
           for (let j = 0; j < i + 1; j++) {
             const day = Day.createDay('', 0)
-            day.hour.confirmed = list[i]
-            main.daysC.value.push(day)
+            day.setConfirmedHour(list[i])
+            main.daysC.value.push(day.getDay())
           }
 
           expect(main.getHours() - main.hourC.value).toBeLessThan(0)
@@ -90,8 +92,8 @@ describe('WeekFunctions', () => {
 
           for (let j = 0; j < i + 1; j++) {
             const day = Day.createDay('', 0)
-            day.hour.confirmed = list[i]
-            main.daysC.value.push(day)
+            day.setConfirmedHour(list[i])
+            main.daysC.value.push(day.getDay())
           }
 
           expect(main.getHours() - main.hourC.value).toBeGreaterThan(0)
@@ -117,8 +119,8 @@ describe('WeekFunctions', () => {
           main.daysC.value.splice(0, main.daysC.value.length)
 
           const day = Day.createDay('', 0)
-          day.hour.confirmed = v
-          main.daysC.value.push(day)
+          day.setConfirmedHour(v)
+          main.daysC.value.push(day.getDay())
 
           expect(main.getHours() - main.hourC.value).toEqual(0)
           expect(main.getDifference()).toEqual(0)
@@ -163,7 +165,7 @@ describe('WeekFunctions', () => {
               }
             },
           )
-          main.daysC.value.push(Day.createDay('', 0))
+          main.daysC.value.push(Day.createDay('', 0).getDay())
         }),
       20,
     )
@@ -179,7 +181,7 @@ describe('WeekFunctions', () => {
           },
         )
         main.daysC.value = ((v) => {
-          v.push(Day.createDay('', 0))
+          v.push(Day.createDay('', 0).getDay())
           return v
         })(main.daysC.value)
       }))
@@ -202,7 +204,7 @@ describe('WeekFunctions', () => {
         )
         main.hourC.value = 2
         main.daysC.value = ((v) => {
-          v.push(Day.createDay('', 0))
+          v.push(Day.createDay('', 0).getDay())
           return v
         })(main.daysC.value)
       }))
@@ -224,7 +226,7 @@ describe('WeekFunctions', () => {
           )
           main.hourC.value = 2
           main.daysC.value = ((v) => {
-            v.push(Day.createDay('', 0))
+            v.push(Day.createDay('', 0).getDay())
             return v
           })(main.daysC.value)
         }),
@@ -232,7 +234,7 @@ describe('WeekFunctions', () => {
     )
   })
   describe('addEmptyDay', () => {
-    const days = [Day.createDay('name', 0)]
+    const days = [Day.createDay('name', 0).getDay()]
     days.splice(0)
 
     Array(5)
