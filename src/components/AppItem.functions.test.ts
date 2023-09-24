@@ -1,6 +1,6 @@
 import { SpyInstance, beforeEach, describe, expect, test, vi } from 'vitest'
 import { AppFunctions } from '.'
-import { Database, Week } from '../functions'
+import { Database, Day, Week } from '../functions'
 import { IAppItemFunctions, IDexieWeek, IWeek } from '../types'
 import { PromiseExtended } from 'dexie'
 
@@ -21,12 +21,26 @@ const dexieWeekCompare = (week1: IDexieWeek, week2: IDexieWeek) => {
   expect(week1.hour).toEqual(week2.hour)
   expect(week1.id).toEqual(week2.id)
   expect(week1).toEqual(week2)
+  expect(week1.days.length).toEqual(week2.days.length)
+  week1.days.forEach((value, index) => {
+    expect(value).toEqual(week2.days[index])
+  })
 }
 
 const weekCompare = (week1: IWeek, week2: IWeek) => {
   expect(week1.hour).toEqual(week2.hour)
   expect(week1.id).toEqual(week2.id)
   expect(week1).toEqual(week2)
+  expect(week1.days.length).toEqual(week2.days.length)
+  week1.days.forEach((value, index) => {
+    expect(value.hour.confirmed).toEqual(week2.days[index].hour.confirmed)
+    expect(value.hour.planned).toEqual(week2.days[index].hour.planned)
+    expect(value.id).toEqual(week2.days[index].id)
+    expect(value.name).toEqual(week2.days[index].name)
+    expect(value.weekId).toEqual(week2.days[index].weekId)
+    expect(value).toEqual(week2.days[index])
+    expect(value.weekId).toEqual(week1.id)
+  })
 }
 
 describe('AppFunctions', () => {
@@ -73,6 +87,41 @@ describe('AppFunctions', () => {
           }, 1)
         }))
       test('Run #2', () =>
+        new Promise((resolve) => {
+          main.db.editWeek = vi.fn()
+          const spy = vi.spyOn(main.db, 'editWeek')
+
+          main.week.value.days = [Day.getEmptyDay()]
+          expect(main.week.value.days.length).toEqual(1)
+
+          setTimeout(() => {
+            editWeekSpyTest(spy, Week.normalToDexie(main.week.value))
+
+            expect(spy).toBeCalledTimes(1) // 1-change number of days
+            expect(main.week.value.id).toEqual(1)
+
+            resolve(1)
+          }, 1)
+        }))
+      test('Run #3', () =>
+        new Promise((resolve) => {
+          main.db.editWeek = vi.fn()
+          const spy = vi.spyOn(main.db, 'editWeek')
+
+          main.week.value.days.push(Day.getEmptyDay())
+          main.week.value.days.push(Day.getEmptyDay())
+          expect(main.week.value.days.length).toEqual(3)
+
+          setTimeout(() => {
+            editWeekSpyTest(spy, Week.normalToDexie(main.week.value))
+
+            expect(spy).toBeCalledTimes(1) // 1-change number of days
+            expect(main.week.value.id).toEqual(1)
+
+            resolve(1)
+          }, 1)
+        }))
+      test('Run #4', () =>
         new Promise((resolve) => {
           main.db.editWeek = vi.fn()
           const spy = vi.spyOn(main.db, 'editWeek')
