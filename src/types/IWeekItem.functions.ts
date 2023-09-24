@@ -12,4 +12,5 @@ export interface IWeekItemFunctions {
   getDifference: () => number
   getSign: () => '+' | '-'
   emitUpdate: () => void
+  addEmptyDay: () => void
 }

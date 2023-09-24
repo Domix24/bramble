@@ -139,10 +139,15 @@ describe('WeekFunctions', () => {
   })
   describe('emitUpdate', () => {
     test('Run #1', () =>
-      new Promise((resolve) => {
+      new Promise((resolve, reject) => {
         const main = WeekFunctions.main(
           { week: Week.createWeek('2h').getWeek() },
-          () => resolve(1),
+          (event, week) => {
+            if (event == 'update:week') {
+              if (week.hour === 2) resolve(1)
+              else reject(`wrong hour (${week.hour}) / (2)`)
+            }
+          },
         )
         main.hourC.value = 2
       }))
@@ -152,17 +157,26 @@ describe('WeekFunctions', () => {
         new Promise((resolve) => {
           const main = WeekFunctions.main(
             { week: Week.createWeek('2h').getWeek() },
-            () => resolve(1),
+            (event) => {
+              if (event == 'update:week') {
+                resolve(1)
+              }
+            },
           )
           main.daysC.value.push(Day.createDay('', 0))
         }),
       20,
     )
     test('Run #3', () =>
-      new Promise((resolve) => {
+      new Promise((resolve, reject) => {
         const main = WeekFunctions.main(
           { week: Week.createWeek('2h').getWeek() },
-          () => resolve(1),
+          (event, week) => {
+            if (event == 'update:week') {
+              if (week.days.length == 1) resolve(1)
+              else reject(`wrong number of days (${week.days.length}) / (1)`)
+            }
+          },
         )
         main.daysC.value = ((v) => {
           v.push(Day.createDay('', 0))
@@ -170,14 +184,19 @@ describe('WeekFunctions', () => {
         })(main.daysC.value)
       }))
     test('Run #4', () =>
-      new Promise((resolve) => {
+      new Promise((resolve, reject) => {
         let count = 0
         const main = WeekFunctions.main(
           { week: Week.createWeek('2h').getWeek() },
-          () => {
-            count++
-            if (count == 2) {
-              resolve(1)
+          (event, week) => {
+            if (event == 'update:week') {
+              count++
+              if (count == 2) {
+                if (week.days.length == 1 && week.hour == 2) resolve(1)
+                else if (week.days.length == 1)
+                  reject(`wrong hour (${week.hour}) / (2)`)
+                else reject(`wrong number of days (${week.days.length}) / (1)`)
+              }
             }
           },
         )
@@ -194,10 +213,12 @@ describe('WeekFunctions', () => {
           let count = 0
           const main = WeekFunctions.main(
             { week: Week.createWeek('2h').getWeek() },
-            () => {
-              count++
-              if (count == 3) {
-                resolve(1)
+            (event) => {
+              if (event == 'update:week') {
+                count++
+                if (count == 3) {
+                  resolve(1)
+                }
               }
             },
           )
@@ -209,5 +230,19 @@ describe('WeekFunctions', () => {
         }),
       20,
     )
+  })
+  describe('addEmptyDay', () => {
+    const days = [Day.createDay('name', 0)]
+    days.splice(0)
+
+    Array(5)
+      .fill(0)
+      .map((_, i) => i + 1)
+      .forEach((value) => {
+        test(`Run #${value}`, () => {
+          WeekFunctions.addEmptyDay(days)
+          expect(days.length).toEqual(value)
+        })
+      })
   })
 })

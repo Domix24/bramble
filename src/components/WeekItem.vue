@@ -56,7 +56,10 @@ defineEmits<IWeekItemEmits>()
         <i class="bi bi-pencil"></i>
         <span class="d-none d-md-inline ps-1">Edit</span>
       </button>
-      <button class="btn btn-primary">
+      <button
+        class="btn btn-primary"
+        @click="WeekFunctions.main($props, $emit).addEmptyDay"
+      >
         <i class="bi bi-plus"></i>
         <span class="d-none d-md-inline ps-1">Add</span>
       </button>
