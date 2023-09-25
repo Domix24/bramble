@@ -30,6 +30,10 @@ export class BrambleDatabase extends Dexie {
     return this.weeks.put(week)
   }
 
+  getDay(dayId: number) {
+    return this.days.get(dayId)
+  }
+
   addDay(day: IDexieDay) {
     return this.days.add(day)
   }

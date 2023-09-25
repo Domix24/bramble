@@ -44,9 +44,25 @@ export const main = (bypassMount?: boolean) => {
         inside.createdDay.value.edit.update &&
         typeof inside.createdDay.value.id === 'undefined'
       ) {
-        inside.db.addDay(Day.normalToDexie(inside.createdDay.value))
+        inside.db
+          .addDay(Day.normalToDexie(inside.createdDay.value))
+          .then((dayId) => {
+            inside.createdDay.value!.id = dayId
+
+            inside.week.value = ((currentWeek, newDay) => {
+              const week = Week.createWeek(currentWeek.hour)
+              week.setId(currentWeek.id)
+
+              currentWeek.days.forEach((day) => {
+                week.addDay(day)
+              })
+              week.addDay(newDay)
+
+              return week.getWeek()
+            })(inside.week.value, inside.createdDay.value!)
+            inside.createdDay.value = undefined
+          })
       }
-      inside.createdDay.value = undefined
     },
     //
     _watch: () => {
@@ -55,7 +71,13 @@ export const main = (bypassMount?: boolean) => {
     _mount: () => {
       inside.db.getWeek(1).then((value) => {
         if (value) {
-          inside.week.value = Week.dexieToNormal(value)
+          const week = Week.dexieToNormal(value)
+          Promise.all(value.days.map((day) => inside.db.getDay(day))).then(
+            (days) => {
+              week.days = days.map((day) => Day.dexieToNormal(day!))
+              inside.week.value = week
+            },
+          )
         } else {
           inside.editWeek()
         }
