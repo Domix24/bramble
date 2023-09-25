@@ -5,9 +5,18 @@ import { IWeekItemEmits, IWeekItemProps } from '../types'
 
 defineProps<IWeekItemProps>()
 defineEmits<IWeekItemEmits>()
+
+const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
 </script>
 
 <template>
+  <template v-if="SHOW_CUSTOM_DEBUG == 'X'">
+    <p>{{ week }}</p>
+    <p>
+      {{ WeekFunctions.main($props, $emit).daysC }} /
+      {{ WeekFunctions.main($props, $emit).hourC }}
+    </p>
+  </template>
   <div class="px-4 py-5 my-5">
     <h1
       v-if="

@@ -7,11 +7,23 @@ import {
   WeekComponent,
 } from '.'
 
+const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
 const main = AppFunctions.main()
-const { week, createdWeek, createdDay } = main
+const {
+  createdDay,
+  createdWeek,
+  outputDays,
+  outputWeek,
+  outputWeeks,
+  seconds,
+  week,
+} = main
 </script>
 
 <template>
+  <template v-if="SHOW_CUSTOM_DEBUG == 'X'">
+    <p>{{ week }}</p>
+  </template>
   <main>
     <NotificationComponent v-if="false" />
     <TitleComponent />
@@ -33,4 +45,13 @@ const { week, createdWeek, createdDay } = main
       @close="main.doCloseDay"
     />
   </template>
+  <aside v-if="SHOW_CUSTOM_DEBUG == 'X'">
+    <h1>
+      Output from dexie every {{ seconds }} seconds
+      <small>{{ +new Date() }}</small>
+    </h1>
+    <p><strong>Days</strong> {{ outputDays }}</p>
+    <p><strong>Weeks</strong> {{ outputWeeks }}</p>
+    <p><strong>Week</strong> {{ outputWeek }}</p>
+  </aside>
 </template>

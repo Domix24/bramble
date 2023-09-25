@@ -61,6 +61,11 @@ export const main = (bypassMount?: boolean) => {
         }
       })
     },
+    //
+    seconds: ref(parseInt(import.meta.env.VITE_SECONDS_REFRESH_DEBUG) || 0),
+    outputDays: ref([]),
+    outputWeeks: ref([]),
+    outputWeek: ref(undefined),
   }
 
   watch(inside.week.value, inside._watch)
@@ -68,6 +73,19 @@ export const main = (bypassMount?: boolean) => {
 
   if (!bypassMount) {
     onMounted(inside._mount)
+  }
+
+  if (import.meta.env.VITE_SHOW_CUSTOM_DEBUG === 'X') {
+    watch(inside.week.value, console.warn)
+    watch(inside.week, console.warn)
+
+    if (inside.seconds.value) {
+      setInterval(async () => {
+        inside.outputDays.value = await window.getDays()
+        inside.outputWeek.value = await inside.db.getWeek(1)
+        inside.outputWeeks.value = await window.getWeeks()
+      }, inside.seconds.value * 1000)
+    }
   }
 
   return inside

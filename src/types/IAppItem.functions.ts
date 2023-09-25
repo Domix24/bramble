@@ -1,5 +1,5 @@
 import { Ref } from 'vue'
-import { IDay, IWeek } from '.'
+import { IDay, IDexieDay, IDexieWeek, IWeek } from '.'
 import { Database } from '../functions'
 
 export interface IAppItemFunctions {
@@ -17,4 +17,9 @@ export interface IAppItemFunctions {
   //
   _watch: () => void
   _mount: () => void
+  //
+  seconds: Ref<number>
+  outputDays: Ref<IDexieDay[]>
+  outputWeeks: Ref<IDexieWeek[]>
+  outputWeek: Ref<IDexieWeek | undefined>
 }
