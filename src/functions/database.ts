@@ -1,7 +1,8 @@
 import Dexie, { Table } from 'dexie'
-import { IDexieWeek } from '../types'
+import { IDexieDay, IDexieWeek } from '../types'
 
 export class BrambleDatabase extends Dexie {
+  days!: Table<IDexieDay, number>
   weeks!: Table<IDexieWeek, number>
 
   constructor() {
@@ -27,5 +28,9 @@ export class BrambleDatabase extends Dexie {
 
   editWeek(week: IDexieWeek) {
     return this.weeks.put(week)
+  }
+
+  addDay(day: IDexieDay) {
+    return this.days.add(day)
   }
 }

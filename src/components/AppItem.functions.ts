@@ -1,5 +1,5 @@
 import { onMounted, ref, watch } from 'vue'
-import { Database, Week } from '../functions'
+import { Database, Day, Week } from '../functions'
 import { IAppItemFunctions, IDexieWeek } from '../types'
 
 const defaultWeek = Week.createWeek(0).getWeek()
@@ -15,6 +15,7 @@ export const main = (bypassMount?: boolean) => {
   const inside: IAppItemFunctions = {
     week: ref(defaultWeek),
     createdWeek: ref(undefined),
+    createdDay: ref(undefined),
     db: new Database.BrambleDatabase(),
     editWeek: () => {
       inside.week.value.id = 1
@@ -30,6 +31,22 @@ export const main = (bypassMount?: boolean) => {
         inside.week.value.edit.update = false
       }
       inside.createdWeek.value = undefined
+    },
+    //
+    doCreateDay: (week) => {
+      inside.createdDay.value = Day.getEmptyDayManager()
+        .setWeekId(week.id)
+        .getDay()
+    },
+    doCloseDay: () => {
+      if (
+        inside.createdDay.value &&
+        inside.createdDay.value.edit.update &&
+        typeof inside.createdDay.value.id === 'undefined'
+      ) {
+        inside.db.addDay(Day.normalToDexie(inside.createdDay.value))
+      }
+      inside.createdDay.value = undefined
     },
     //
     _watch: () => {

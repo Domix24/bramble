@@ -6,4 +6,9 @@ export interface IDay {
     planned: number
     confirmed: number
   }
+  edit: {
+    hour: string
+    name: string
+    update: boolean
+  }
 }

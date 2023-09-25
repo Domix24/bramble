@@ -31,21 +31,21 @@ describe('createDay', () => {
     test('emptyDayManager', () => {
       expect(getEmptyDayManager().getDay().hour.confirmed).toBeUndefined()
       expect(getEmptyDayManager().getDay().hour.planned).toEqual(0)
-      expect(getEmptyDayManager().getDay().id).toEqual(0)
+      expect(getEmptyDayManager().getDay().id).toBeUndefined()
       expect(getEmptyDayManager().getDay().name).toEqual('')
       expect(getEmptyDayManager().getDay().weekId).toEqual(0)
     })
     test('emptyDay', () => {
       expect(getEmptyDay().hour.confirmed).toBeUndefined()
       expect(getEmptyDay().hour.planned).toEqual(0)
-      expect(getEmptyDay().id).toEqual(0)
+      expect(getEmptyDay().id).toBeUndefined()
       expect(getEmptyDay().name).toEqual('')
       expect(getEmptyDay().weekId).toEqual(0)
     })
     test('emptyDexie', () => {
       expect(getEmptyDexie().confirmedHour).toBeUndefined()
       expect(getEmptyDexie().plannedHour).toEqual(0)
-      expect(getEmptyDexie().id).toEqual(0)
+      expect(getEmptyDexie().id).toBeUndefined()
       expect(getEmptyDexie().name).toEqual('')
       expect(getEmptyDexie().weekId).toEqual(0)
     })
@@ -55,7 +55,7 @@ describe('createDay', () => {
 
       expect(day.getDay().hour.confirmed).toEqual(3)
       expect(day.getDay().hour.planned).toEqual(0)
-      expect(day.getDay().id).toEqual(0)
+      expect(day.getDay().id).toBeUndefined()
       expect(day.getDay().name).toEqual('')
       expect(day.getDay().weekId).toEqual(0)
     })
@@ -75,7 +75,7 @@ describe('createDay', () => {
 
       expect(day.getDay().hour.confirmed).toBeUndefined()
       expect(day.getDay().hour.planned).toEqual(0)
-      expect(day.getDay().id).toEqual(0)
+      expect(day.getDay().id).toBeUndefined()
       expect(day.getDay().name).toEqual('')
       expect(day.getDay().weekId).toEqual(5)
     })
@@ -90,11 +90,11 @@ describe('createDay', () => {
         dexie = dayM.getDexie()
 
         expect(day.hour.confirmed).toEqual(1)
-        expect(day.id).toEqual(0)
+        expect(day.id).toBeUndefined()
         expect(day.weekId).toEqual(0)
 
         expect(dexie.confirmedHour).toEqual(1)
-        expect(dexie.id).toEqual(0)
+        expect(dexie.id).toBeUndefined()
         expect(dexie.weekId).toEqual(0)
       })
       test('Run #2', () => {
@@ -120,11 +120,11 @@ describe('createDay', () => {
         dexie = dayM.getDexie()
 
         expect(day.hour.confirmed).toBeUndefined()
-        expect(day.id).toEqual(0)
+        expect(day.id).toBeUndefined()
         expect(day.weekId).toEqual(3)
 
         expect(dexie.confirmedHour).toBeUndefined()
-        expect(dexie.id).toEqual(0)
+        expect(dexie.id).toBeUndefined()
         expect(dexie.weekId).toEqual(3)
       })
       afterEach(() => {
@@ -164,6 +164,11 @@ describe('dexieToNormal', () => {
       weekId: 2,
     }
     const expected: IDay = {
+      edit: {
+        hour: '',
+        name: '',
+        update: false,
+      },
       hour: {
         confirmed: 43,
         planned: 21,
@@ -184,6 +189,11 @@ describe('dexieToNormal', () => {
 describe('normalToDexie', () => {
   test('Run #1', () => {
     const normal: IDay = {
+      edit: {
+        hour: '',
+        name: '',
+        update: false,
+      },
       hour: {
         confirmed: 86,
         planned: 42,

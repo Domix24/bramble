@@ -1,4 +1,4 @@
-import { Time } from '.'
+import { Display, Time } from '.'
 import { IDay, IDexieDay } from '../types'
 
 const DayManager = class {
@@ -26,6 +26,12 @@ const DayManager = class {
     return this
   }
 
+  setUpdated() {
+    this.#day.edit.update = true
+
+    return this
+  }
+
   getDay() {
     return this.#day
   }
@@ -37,14 +43,18 @@ const DayManager = class {
 
 export const createDay = (name: string, hour: number | string) => {
   const dayObject: IDay = {
+    edit: {
+      hour: Display.showHourMinute(createHour(hour).planned),
+      name: name,
+      update: false,
+    },
     hour: {
       confirmed: createHour(hour).confirmed,
       planned: createHour(hour).planned,
     },
-    id: 0,
     name: name,
     weekId: 0,
-  }
+  } as IDay
 
   return new DayManager(dayObject)
 }
@@ -58,6 +68,11 @@ export const createHour = (planned: number | string) => {
 
 export const dexieToNormal: (day: IDexieDay) => IDay = (day: IDexieDay) => {
   return {
+    edit: {
+      hour: Display.showHourMinute(day.plannedHour),
+      name: day.name,
+      update: false,
+    },
     hour: {
       confirmed: day.confirmedHour,
       planned: day.plannedHour,
