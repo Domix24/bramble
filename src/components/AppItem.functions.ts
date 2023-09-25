@@ -27,6 +27,7 @@ export const main = (bypassMount?: boolean) => {
     },
     doCloseWeek: () => {
       if (inside.createdWeek.value && inside.createdWeek.value.edit.update) {
+        inside.createdWeek.value.days = inside.week.value.days
         inside.week.value = inside.createdWeek.value
         inside.week.value.edit.update = false
       }
