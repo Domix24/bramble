@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { Display } from '../functions'
-import { IDayItemProps } from '../types'
+import { IDayItemEmits, IDayItemProps } from '../types'
 import { DayFunctions } from '.'
 
 const main = DayFunctions.main()
 const { dayStart, dayStop, lunchStart, lunchStop } = main
 
+defineEmits<IDayItemEmits>()
 defineProps<IDayItemProps>()
 </script>
 
@@ -85,6 +86,14 @@ defineProps<IDayItemProps>()
           >
             <i class="bi bi-stop"></i>
             <span class="d-none d-md-inline ps-1">Stop Exact</span>
+          </button>
+          <button
+            v-if="!dayStart"
+            class="btn btn-warning"
+            @click="$emit('update', day)"
+          >
+            <i class="bi bi-pencil"></i>
+            <span class="d-none d-md-inline ps-1">Edit</span>
           </button>
         </div>
       </div>

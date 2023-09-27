@@ -1,7 +1,7 @@
 import { SpyInstance, beforeEach, describe, expect, test, vi } from 'vitest'
 import { AppFunctions } from '.'
 import { Database, Day, Week } from '../functions'
-import { IAppItemFunctions, IDexieWeek, IWeek } from '../types'
+import { IAppItemFunctions, IDexieDay, IDexieWeek, IWeek } from '../types'
 import { PromiseExtended } from 'dexie'
 
 const editWeekSpyTest = (
@@ -214,6 +214,85 @@ describe('AppFunctions', () => {
             resolve(1)
           }, 1)
         }))
+    })
+    describe('doCreateDay', () => {
+      beforeEach(() => {
+        expect(main.createdDay.value).toBeUndefined()
+      })
+      Array(5)
+        .fill(0)
+        .map((_, index) => index)
+        .forEach((value) => {
+          test(`Run #${value + 1}`, () => {
+            main.doCreateDay(Week.createWeek(0).setId(value).getWeek())
+            expect(main.createdDay.value).toBeDefined()
+            expect(main.createdDay.value!.weekId).toEqual(value)
+            expect(main.createdDay.value!.edit.hour).toEqual('0h')
+            expect(main.createdDay.value!.edit.name).toEqual('')
+            expect(main.createdDay.value!.edit.update).toEqual(false)
+            expect(main.createdDay.value!.hour.confirmed).toBeUndefined()
+            expect(main.createdDay.value!.hour.planned).toEqual(0)
+            expect(main.createdDay.value!.id).toBeUndefined()
+            expect(main.createdDay.value!.name).toEqual('')
+            expect(main.createdDay.value!.weekId).toEqual(value)
+          })
+        })
+    })
+    describe('doCloseDay', () => {
+      Array(2)
+        .fill(0)
+        .map((_, index) => ['doCreateDay', 'doUpdateDay'][index])
+        .forEach((value) => {
+          describe(`from ${value}`, () => {
+            let daySpy: SpyInstance<[day: IDexieDay], PromiseExtended<number>>
+            let day0Spy: SpyInstance<[id: number], void>
+            let day1Spy: SpyInstance<[], IWeek>
+            let day2Spy: SpyInstance<[week: IWeek], void>
+            let day3Spy: SpyInstance<[], void>
+
+            beforeEach(() => {
+              daySpy = vi.spyOn(main.db, 'editDay').mockResolvedValue(3)
+              day0Spy = vi.spyOn(main, 'doCloseDay0').mockResolvedValue()
+              day1Spy = vi
+                .spyOn(main, 'doCloseDay1')
+                .mockResolvedValue(Week.createWeek(0).getWeek())
+              day2Spy = vi.spyOn(main, 'doCloseDay2').mockResolvedValue()
+              day3Spy = vi.spyOn(main, 'doCloseDay3').mockResolvedValue()
+
+              if (value == 'doCreateDay')
+                main.doCreateDay(Week.createWeek(0).setId(3).getWeek())
+              else
+                main.doUpdateDay(
+                  Week.createWeek(0).getWeek(),
+                  Day.getEmptyDayManager().setId(3).getDay(),
+                )
+            })
+            test('Run #1', () => {
+              expect(main.createdDay.value!.edit.update).toBeFalsy()
+              main.doCloseDay()
+              expect(daySpy).toBeCalledTimes(0)
+            })
+            test('Run #2', () =>
+              new Promise((resolve) => {
+                main.createdDay.value!.edit.update = true
+                expect(main.createdDay.value!.edit.update).toBeTruthy()
+
+                if (value == 'doCreateDay')
+                  expect(main.createdDay.value!.id).toBeUndefined()
+                else expect(main.createdDay.value!.id).toEqual(3)
+
+                main.doCloseDay()
+                expect(daySpy).toBeCalledTimes(1)
+                setTimeout(() => {
+                  expect(day0Spy).toBeCalledTimes(1)
+                  expect(day1Spy).toBeCalledTimes(1)
+                  expect(day2Spy).toBeCalledTimes(1)
+                  expect(day3Spy).toBeCalledTimes(1)
+                  resolve(1)
+                }, 1)
+              }))
+          })
+        })
     })
     describe('_watch', () => {
       test('Run #1', () => {

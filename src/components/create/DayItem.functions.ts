@@ -46,6 +46,7 @@ export const main = (
         emits(
           'update:day',
           Day.createDay(inside.name.value, inside.hour.value)
+            .setId(props.day.id)
             .setUpdated()
             .setWeekId(props.day.weekId)
             .getDay(),

@@ -40,30 +40,44 @@ export const main = (bypassMount?: boolean) => {
         .getDay()
     },
     doCloseDay: () => {
-      if (
-        inside.createdDay.value &&
-        inside.createdDay.value.edit.update &&
-        typeof inside.createdDay.value.id === 'undefined'
-      ) {
+      if (inside.createdDay.value && inside.createdDay.value.edit.update)
         inside.db
-          .addDay(Day.normalToDexie(inside.createdDay.value))
-          .then((dayId) => {
-            inside.createdDay.value!.id = dayId
+          .editDay(Day.normalToDexie(inside.createdDay.value))
+          .then(inside.doCloseDay0)
+          .then(inside.doCloseDay1)
+          .then(inside.doCloseDay2)
+          .then(inside.doCloseDay3)
+    },
+    doCloseDay0: (id) => {
+      inside.createdDay.value!.id = id
+    },
+    doCloseDay1: () => {
+      return inside._updateWeek(inside.week.value, inside.createdDay.value!)
+    },
+    doCloseDay2: (week) => {
+      inside.week.value = week
+    },
+    doCloseDay3: () => {
+      inside.createdDay.value = undefined
+    },
+    //
+    doUpdateDay: (_, day) => {
+      inside.createdDay.value = day
+    },
+    //
+    _updateWeek: (week, day) => {
+      const newWeek = Week.createWeek(week.hour)
+      newWeek.setId(week.id)
 
-            inside.week.value = ((currentWeek, newDay) => {
-              const week = Week.createWeek(currentWeek.hour)
-              week.setId(currentWeek.id)
+      let dayUpdated = false
+      week.days.forEach((currentDay) => {
+        dayUpdated = dayUpdated || day.id == currentDay.id
+        if (day.id == currentDay.id) newWeek.addDay(day)
+        else newWeek.addDay(currentDay)
+      })
+      if (!dayUpdated) newWeek.addDay(day)
 
-              currentWeek.days.forEach((day) => {
-                week.addDay(day)
-              })
-              week.addDay(newDay)
-
-              return week.getWeek()
-            })(inside.week.value, inside.createdDay.value!)
-            inside.createdDay.value = undefined
-          })
-      }
+      return newWeek.getWeek()
     },
     //
     _watch: () => {

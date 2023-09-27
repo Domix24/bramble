@@ -14,6 +14,14 @@ export interface IAppItemFunctions {
   //
   doCreateDay: (week: IWeek) => void
   doCloseDay: () => void
+  doCloseDay0: (id: number) => void
+  doCloseDay1: () => IWeek
+  doCloseDay2: (week: IWeek) => void
+  doCloseDay3: () => void
+  //
+  doUpdateDay: (week: IWeek, day: IDay) => void
+  //
+  _updateWeek: (week: IWeek, day: IDay) => IWeek
   //
   _watch: () => void
   _mount: () => void

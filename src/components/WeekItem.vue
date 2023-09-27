@@ -72,9 +72,10 @@ const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
     </div>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
       <DayComponent
-        v-for="(_day, index) in WeekFunctions.main($props, $emit).daysC.value"
+        v-for="(day, index) in WeekFunctions.main($props, $emit).daysC.value"
         :key="index"
-        :day="WeekFunctions.main($props, $emit).daysC.value[index]"
+        v-model:day="WeekFunctions.main($props, $emit).daysC.value[index]"
+        @update="$emit('update:day', week, day)"
       />
     </div>
   </div>

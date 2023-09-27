@@ -34,7 +34,7 @@ export class BrambleDatabase extends Dexie {
     return this.days.get(dayId)
   }
 
-  addDay(day: IDexieDay) {
-    return this.days.add(day)
+  editDay(day: IDexieDay) {
+    return this.days.put(day)
   }
 }

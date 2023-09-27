@@ -31,6 +31,7 @@ const {
       v-model:week="week"
       @update="main.doUpdateWeek"
       @create="main.doCreateDay"
+      @update:day="main.doUpdateDay"
     />
   </main>
   <template v-if="true">
