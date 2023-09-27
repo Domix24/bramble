@@ -22,8 +22,8 @@ declare global {
 
 if (import.meta.env.VITE_SHOW_CUSTOM_DEBUG === 'X') {
   window.clearAll = () => Promise.all([window.clearDays(), window.clearWeeks()])
-  window.clearDays = () => new BrambleDatabase().weeks.clear()
-  window.clearWeeks = () => new BrambleDatabase().days.clear()
+  window.clearDays = () => new BrambleDatabase().days.clear()
+  window.clearWeeks = () => new BrambleDatabase().weeks.clear()
 
   window.getDays = () => new BrambleDatabase().days.toArray()
   window.getWeeks = () => new BrambleDatabase().weeks.toArray()
