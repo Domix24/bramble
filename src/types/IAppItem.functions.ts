@@ -19,7 +19,7 @@ export interface IAppItemFunctions {
   doCloseDay2: (week: IWeek) => void
   doCloseDay3: () => void
   //
-  doUpdateDay: (week: IWeek, day: IDay) => void
+  doUpdateDay: (week: IWeek, day: IDay, mode: boolean) => void
   //
   _updateWeek: (week: IWeek, day: IDay) => IWeek
   //

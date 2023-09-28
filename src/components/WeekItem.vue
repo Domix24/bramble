@@ -75,7 +75,8 @@ const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
         v-for="(day, index) in WeekFunctions.main($props, $emit).daysC.value"
         :key="index"
         v-model:day="WeekFunctions.main($props, $emit).daysC.value[index]"
-        @update="$emit('update:day', week, day)"
+        @update="$emit('update:day', week, day, false)"
+        @update:day:direct="$emit('update:day', week, day, true)"
       />
     </div>
   </div>

@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { IDayItemFunctions, IDayItemProps } from '../types'
+import { IDayItemEmits, IDayItemFunctions, IDayItemProps } from '../types'
 import { Time } from '../functions'
 
 export const trimSeconds = (date: Date) =>
@@ -9,7 +9,7 @@ export const addHourMinute = (date: Date, hour: number) =>
   +date + hour * 3600000
 
 export const main = () => {
-  const inside = {
+  const inside: IDayItemFunctions = {
     dayStart: ref(undefined as undefined | Date),
     dayStop: ref(undefined as undefined | Date),
 
@@ -21,13 +21,13 @@ export const main = () => {
         inside.dayStart.value = trimSeconds(new Date())
       else inside.lunchStart.value = trimSeconds(new Date())
     },
-    onStop: (dayO: IDayItemProps) => {
+    onStop: (dayO: IDayItemProps, emits?: IDayItemEmits) => {
       if (!inside.lunchStop.value)
         inside.lunchStop.value = trimSeconds(new Date())
-      else inside._updateDayStop(dayO, trimSeconds(new Date()))
+      else inside._updateDayStop(dayO, trimSeconds(new Date()), emits)
     },
-    onStopExact: (dayO: IDayItemProps) =>
-      inside._updateDayStop(dayO, inside.getEstimatedTime(dayO)),
+    onStopExact: (dayO: IDayItemProps, emits?: IDayItemEmits) =>
+      inside._updateDayStop(dayO, inside.getEstimatedTime(dayO), emits),
 
     getLunchDiff: () => +inside.lunchStop.value! - +inside.lunchStart.value!,
     getDayTotal: () =>
@@ -38,13 +38,18 @@ export const main = () => {
           inside.getLunchDiff(),
       ),
 
-    _updateDayStop: (dayO: IDayItemProps, newDate: Date) => {
+    _updateDayStop: (
+      dayO: IDayItemProps,
+      newDate: Date,
+      emits?: IDayItemEmits,
+    ) => {
       inside.dayStop.value = newDate
       dayO.day.hour.confirmed = Time.toNumber(
         parseInt(inside.getDayTotal() / 900000 + '') * 0.25,
       )
+      if (emits) emits('update:day:direct', dayO.day)
     },
-  } as IDayItemFunctions
+  }
 
   return inside
 }

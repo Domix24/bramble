@@ -61,8 +61,14 @@ export const main = (bypassMount?: boolean) => {
       inside.createdDay.value = undefined
     },
     //
-    doUpdateDay: (_, day) => {
-      inside.createdDay.value = day
+    doUpdateDay: (_, day, mode) => {
+      if (!mode) inside.createdDay.value = day
+      else {
+        inside.db
+          .editDay(Day.normalToDexie(day))
+          .then(() => inside._updateWeek(inside.week.value, day))
+          .then(inside.doCloseDay2)
+      }
     },
     //
     _updateWeek: (week, day) => {

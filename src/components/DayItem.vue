@@ -8,6 +8,8 @@ const { dayStart, dayStop, lunchStart, lunchStop } = main
 
 defineEmits<IDayItemEmits>()
 defineProps<IDayItemProps>()
+
+const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
 </script>
 
 <template>
@@ -31,6 +33,9 @@ defineProps<IDayItemProps>()
         }})
       </div>
       <div class="card-body">
+        <template v-if="SHOW_CUSTOM_DEBUG == 'X'">
+          <p>{{ $props }}</p>
+        </template>
         <h5
           v-if="dayStop && dayStart && lunchStart && lunchStop"
           class="card-title"
@@ -56,7 +61,10 @@ defineProps<IDayItemProps>()
         <p v-else-if="lunchStart" class="card-text">
           {{ Display.showDate(lunchStart) }}
         </p>
-        <div v-if="!dayStop" class="d-flex gap-2 flex-wrap">
+        <div
+          v-if="typeof day.hour.confirmed === 'undefined'"
+          class="d-flex gap-2 flex-wrap"
+        >
           <button
             v-if="!lunchStart"
             class="btn btn-success"
@@ -71,7 +79,7 @@ defineProps<IDayItemProps>()
           <button
             v-else
             class="btn btn-danger"
-            @click="() => main.onStop({ day })"
+            @click="() => main.onStop({ day }, $emit)"
           >
             <i class="bi bi-pause"></i>
             <span v-if="!lunchStop" class="d-none d-md-inline ps-1"
@@ -82,7 +90,7 @@ defineProps<IDayItemProps>()
           <button
             v-if="lunchStop"
             class="btn btn-danger"
-            @click="() => main.onStopExact({ day })"
+            @click="() => main.onStopExact({ day }, $emit)"
           >
             <i class="bi bi-stop"></i>
             <span class="d-none d-md-inline ps-1">Stop Exact</span>

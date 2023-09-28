@@ -265,6 +265,7 @@ describe('AppFunctions', () => {
                 main.doUpdateDay(
                   Week.createWeek(0).getWeek(),
                   Day.getEmptyDayManager().setId(3).getDay(),
+                  false,
                 )
             })
             test('Run #1', () => {
