@@ -32,21 +32,29 @@ const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
       <div class="card-body">
         <template v-if="SHOW_CUSTOM_DEBUG == 'X'">
           <p>{{ $props }}</p>
-          <p>{{ DayFunctions.isEmpty(day.day.start) }} / {{ day.day.start }}</p>
-          <p>{{ DayFunctions.isEmpty(day.day.stop) }} / {{ day.day.stop }}</p>
           <p>
-            {{ DayFunctions.isEmpty(day.lunch.start) }} / {{ day.lunch.start }}
+            {{ DayFunctions.isEmpty(day.day && day.day.start) }} /
+            {{ day.day && day.day.start }}
           </p>
           <p>
-            {{ DayFunctions.isEmpty(day.lunch.stop) }} / {{ day.lunch.stop }}
+            {{ DayFunctions.isEmpty(day.day && day.day.stop) }} /
+            {{ day.day && day.day.stop }}
+          </p>
+          <p>
+            {{ DayFunctions.isEmpty(day.lunch && day.lunch.start) }} /
+            {{ day.lunch && day.lunch.start }}
+          </p>
+          <p>
+            {{ DayFunctions.isEmpty(day.lunch && day.lunch.stop) }} /
+            {{ day.lunch && day.lunch.stop }}
           </p>
         </template>
         <h5
           v-if="
-            !DayFunctions.isEmpty(day.day.stop) &&
-            !DayFunctions.isEmpty(day.day.start) &&
-            !DayFunctions.isEmpty(day.lunch.start) &&
-            !DayFunctions.isEmpty(day.lunch.stop)
+            !DayFunctions.isEmpty(day.day && day.day.stop) &&
+            !DayFunctions.isEmpty(day.day && day.day.start) &&
+            !DayFunctions.isEmpty(day.lunch && day.lunch.start) &&
+            !DayFunctions.isEmpty(day.lunch && day.lunch.stop)
           "
           class="card-title"
         >
@@ -59,9 +67,9 @@ const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
         </h5>
         <h5
           v-else-if="
-            !DayFunctions.isEmpty(day.day.start) &&
-            !DayFunctions.isEmpty(day.lunch.start) &&
-            !DayFunctions.isEmpty(day.lunch.stop)
+            !DayFunctions.isEmpty(day.day && day.day.start) &&
+            !DayFunctions.isEmpty(day.lunch && day.lunch.start) &&
+            !DayFunctions.isEmpty(day.lunch && day.lunch.stop)
           "
           class="card-title"
         >
@@ -70,13 +78,16 @@ const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
             Display.showDate(DayFunctions.main($props).getEstimatedTime())
           }}</em>
         </h5>
-        <h5 v-else-if="!DayFunctions.isEmpty(day.day.start)" class="card-title">
+        <h5
+          v-else-if="!DayFunctions.isEmpty(day.day && day.day.start)"
+          class="card-title"
+        >
           {{ Display.showDate(day.day.start) }}
         </h5>
         <p
           v-if="
-            !DayFunctions.isEmpty(day.lunch.stop) &&
-            !DayFunctions.isEmpty(day.lunch.start)
+            !DayFunctions.isEmpty(day.lunch && day.lunch.stop) &&
+            !DayFunctions.isEmpty(day.lunch && day.lunch.start)
           "
           class="card-text"
         >
@@ -87,7 +98,10 @@ const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
             )
           }})
         </p>
-        <p v-else-if="!DayFunctions.isEmpty(day.lunch.start)" class="card-text">
+        <p
+          v-else-if="!DayFunctions.isEmpty(day.lunch && day.lunch.start)"
+          class="card-text"
+        >
           {{ Display.showDate(day.lunch.start) }}
         </p>
         <div
@@ -95,13 +109,13 @@ const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
           class="d-flex gap-2 flex-wrap"
         >
           <button
-            v-if="DayFunctions.isEmpty(day.lunch.start)"
+            v-if="DayFunctions.isEmpty(day.lunch && day.lunch.start)"
             class="btn btn-success"
             @click="DayFunctions.main($props, $emit).onStart"
           >
             <i class="bi bi-play"></i>
             <span
-              v-if="DayFunctions.isEmpty(day.day.start)"
+              v-if="DayFunctions.isEmpty(day.day && day.day.start)"
               class="d-none d-md-inline ps-1"
               >Start Day</span
             >
@@ -114,14 +128,14 @@ const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
           >
             <i class="bi bi-pause"></i>
             <span
-              v-if="DayFunctions.isEmpty(day.lunch.stop)"
+              v-if="DayFunctions.isEmpty(day.lunch && day.lunch.stop)"
               class="d-none d-md-inline ps-1"
               >Stop Lunch</span
             >
             <span v-else class="d-none d-md-inline ps-1">Stop Day</span>
           </button>
           <button
-            v-if="!DayFunctions.isEmpty(day.lunch.stop)"
+            v-if="!DayFunctions.isEmpty(day.lunch && day.lunch.stop)"
             class="btn btn-danger"
             @click="DayFunctions.main($props, $emit).onStopExact"
           >
@@ -129,7 +143,7 @@ const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
             <span class="d-none d-md-inline ps-1">Stop Exact</span>
           </button>
           <button
-            v-if="DayFunctions.isEmpty(day.day.start)"
+            v-if="DayFunctions.isEmpty(day.day && day.day.start)"
             class="btn btn-warning"
             @click="$emit('update', day)"
           >

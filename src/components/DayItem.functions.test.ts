@@ -17,6 +17,26 @@ const combinate = <A>(arg: Array<A>) => {
   return result
 }
 
+const updateLunch = (
+  type: 'start' | 'stop',
+  newValue: Date,
+  props: IDayItemProps,
+) => {
+  if (!props.day.lunch) props.day.lunch = {} as { stop: Date; start: Date }
+  if (type === 'start') props.day.lunch.start = newValue
+  else props.day.lunch.stop = newValue
+}
+
+const updateDay = (
+  type: 'start' | 'stop',
+  newValue: Date,
+  props: IDayItemProps,
+) => {
+  if (!props.day.day) props.day.day = {} as { stop: Date; start: Date }
+  if (type === 'start') props.day.day.start = newValue
+  else props.day.day.stop = newValue
+}
+
 const aDates = Array(5).fill(new Date())
 aDates[0] = new Date(1694380435619)
 aDates[1] = new Date(1694385883061)
@@ -25,10 +45,10 @@ aDates[3] = new Date(1694400640156)
 aDates[4] = new Date(1783521480000)
 
 const aValues0 = Array(4).fill(new Date())
-aValues0[0] = (props: IDayItemProps) => (props.day.day.start = aDates[0])
-aValues0[1] = (props: IDayItemProps) => (props.day.lunch.start = aDates[1])
-aValues0[2] = (props: IDayItemProps) => (props.day.lunch.stop = aDates[2])
-aValues0[3] = (props: IDayItemProps) => (props.day.day.stop = aDates[3])
+aValues0[0] = (props: IDayItemProps) => updateDay('start', aDates[0], props)
+aValues0[1] = (props: IDayItemProps) => updateLunch('start', aDates[1], props)
+aValues0[2] = (props: IDayItemProps) => updateLunch('stop', aDates[2], props)
+aValues0[3] = (props: IDayItemProps) => updateDay('stop', aDates[3], props)
 const aValues1 = Array(2).fill(new Date())
 aValues1[0] = aValues0[1]
 aValues1[1] = aValues0[2]
@@ -91,7 +111,7 @@ describe('DayFunctions', () => {
           expect(onStartSpy).toBeCalledTimes(x + 1)
           expect(props.day.day.start).toBeTruthy()
 
-          if (!x) expect(props.day.lunch.start).toBeFalsy()
+          if (!x) expect(props.day.lunch).toBeFalsy()
           else expect(props.day.lunch.start).toBeTruthy()
         })
       })
@@ -110,7 +130,7 @@ describe('DayFunctions', () => {
           expect(onStopSpy).toBeCalledTimes(x + 1)
           expect(props.day.lunch.stop).toBeTruthy()
 
-          if (!x) expect(props.day.day.stop).toBeFalsy()
+          if (!x) expect(props.day.day).toBeFalsy()
           else expect(props.day.day.stop).toBeTruthy()
         })
       })
