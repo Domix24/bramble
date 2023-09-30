@@ -5,9 +5,18 @@ import { IWeekItemEmits, IWeekItemProps } from '../types'
 
 defineProps<IWeekItemProps>()
 defineEmits<IWeekItemEmits>()
+
+const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
 </script>
 
 <template>
+  <template v-if="SHOW_CUSTOM_DEBUG == 'X'">
+    <p>{{ week }}</p>
+    <p>
+      {{ WeekFunctions.main($props, $emit).daysC }} /
+      {{ WeekFunctions.main($props, $emit).hourC }}
+    </p>
+  </template>
   <div class="px-4 py-5 my-5">
     <h1
       v-if="
@@ -56,16 +65,18 @@ defineEmits<IWeekItemEmits>()
         <i class="bi bi-pencil"></i>
         <span class="d-none d-md-inline ps-1">Edit</span>
       </button>
-      <button class="btn btn-primary">
+      <button class="btn btn-primary" @click="$emit('create', week)">
         <i class="bi bi-plus"></i>
         <span class="d-none d-md-inline ps-1">Add</span>
       </button>
     </div>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
       <DayComponent
-        v-for="(_day, index) in WeekFunctions.main($props, $emit).daysC.value"
+        v-for="(day, index) in WeekFunctions.main($props, $emit).daysC.value"
         :key="index"
-        :day="WeekFunctions.main($props, $emit).daysC.value[index]"
+        v-model:day="WeekFunctions.main($props, $emit).daysC.value[index]"
+        @update="$emit('update:day', week, day, false)"
+        @update:day:direct="$emit('update:day', week, day, true)"
       />
     </div>
   </div>
