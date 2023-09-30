@@ -32,6 +32,30 @@ const DayManager = class {
     return this
   }
 
+  setDayStart(newDayStart: Date) {
+    this.#day.day.start = newDayStart
+
+    return this
+  }
+
+  setDayStop(newDayStop: Date) {
+    this.#day.day.stop = newDayStop
+
+    return this
+  }
+
+  setLunchStart(newLunchStart: Date) {
+    this.#day.lunch.start = newLunchStart
+
+    return this
+  }
+
+  setLunchStop(newLunchStop: Date) {
+    this.#day.lunch.stop = newLunchStop
+
+    return this
+  }
+
   getDay() {
     return this.#day
   }
@@ -42,7 +66,8 @@ const DayManager = class {
 }
 
 export const createDay = (name: string, hour: number | string) => {
-  const dayObject: IDay = {
+  const dayObject: Omit<IDay, 'id'> = {
+    day: {} as { start: Date; stop: Date },
     edit: {
       hour: Display.showHourMinute(createHour(hour).planned),
       name: name,
@@ -52,11 +77,12 @@ export const createDay = (name: string, hour: number | string) => {
       confirmed: createHour(hour).confirmed,
       planned: createHour(hour).planned,
     },
+    lunch: {} as { start: Date; stop: Date },
     name: name,
     weekId: 0,
-  } as IDay
+  }
 
-  return new DayManager(dayObject)
+  return new DayManager(dayObject as IDay)
 }
 
 export const createHour = (planned: number | string) => {
@@ -73,11 +99,19 @@ export const dexieToNormal: (day: IDexieDay) => IDay = (day: IDexieDay) => {
       name: day.name,
       update: false,
     },
+    day: {
+      start: new Date(day.dayStart),
+      stop: new Date(day.dayStop),
+    },
     hour: {
       confirmed: day.confirmedHour,
       planned: day.plannedHour,
     },
     id: day.id,
+    lunch: {
+      start: new Date(day.lunchStart),
+      stop: new Date(day.lunchStop),
+    },
     name: day.name,
     weekId: day.weekId,
   }
@@ -86,7 +120,11 @@ export const dexieToNormal: (day: IDexieDay) => IDay = (day: IDexieDay) => {
 export const normalToDexie: (day: IDay) => IDexieDay = (day: IDay) => {
   return {
     confirmedHour: day.hour.confirmed,
+    dayStart: day.day.start ? +day.day.start : 0,
+    dayStop: day.day.stop ? +day.day.stop : 0,
     id: day.id,
+    lunchStart: day.lunch?.start ? +day.lunch.start : 0,
+    lunchStop: day.lunch?.stop ? +day.lunch.stop : 0,
     name: day.name,
     plannedHour: day.hour.planned,
     weekId: day.weekId,

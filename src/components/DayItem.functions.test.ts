@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from 'vitest'
 import { DayFunctions } from '.'
 import { Day } from '../functions'
-import { IDayItemFunctions } from '../types'
+import { IDayItemProps } from '../types'
 
 const combinate = <A>(arg: Array<A>) => {
   const result = [] as Array<Array<A>>
@@ -25,10 +25,10 @@ aDates[3] = new Date(1694400640156)
 aDates[4] = new Date(1783521480000)
 
 const aValues0 = Array(4).fill(new Date())
-aValues0[0] = (xMain: IDayItemFunctions) => (xMain.dayStart.value = aDates[0])
-aValues0[1] = (xMain: IDayItemFunctions) => (xMain.lunchStart.value = aDates[1])
-aValues0[2] = (xMain: IDayItemFunctions) => (xMain.lunchStop.value = aDates[2])
-aValues0[3] = (xMain: IDayItemFunctions) => (xMain.dayStop.value = aDates[3])
+aValues0[0] = (props: IDayItemProps) => (props.day.day.start = aDates[0])
+aValues0[1] = (props: IDayItemProps) => (props.day.lunch.start = aDates[1])
+aValues0[2] = (props: IDayItemProps) => (props.day.lunch.stop = aDates[2])
+aValues0[3] = (props: IDayItemProps) => (props.day.day.stop = aDates[3])
 const aValues1 = Array(2).fill(new Date())
 aValues1[0] = aValues0[1]
 aValues1[1] = aValues0[2]
@@ -51,32 +51,35 @@ describe('DayFunctions', () => {
   describe('getLunchDiff', () => {
     aCombine1.forEach((v, i) => {
       test(`${v.length} - ${i}`, () => {
-        const main = DayFunctions.main()
-        v.forEach((x) => x.f(main))
+        const props = { day: Day.getEmptyDay() }
+        v.forEach((x) => x.f(props))
 
-        if (v.length < 2) expect(main.getLunchDiff()).toBeNaN()
-        else expect(main.getLunchDiff()).toEqual(nLunchDiff)
+        if (v.length < 2)
+          expect(DayFunctions.main(props).getLunchDiff()).toBeNaN()
+        else expect(DayFunctions.main(props).getLunchDiff()).toEqual(nLunchDiff)
       })
     })
   })
   describe('getDayTotal', () => {
     aCombine0.forEach((v, i) => {
       test(`${v.length} - ${i}`, () => {
-        const main = DayFunctions.main()
-        v.forEach((x) => x.f(main))
+        const props = { day: Day.getEmptyDay() }
+        v.forEach((x) => x.f(props))
         const ix = v.map((x) => x.i)
 
-        if (v.length < 4) expect(main.getDayTotal()).toBeNaN()
-        else expect(main.getDayTotal()).toEqual(nDayTotal)
+        if (v.length < 4)
+          expect(DayFunctions.main(props).getDayTotal()).toBeNaN()
+        else expect(DayFunctions.main(props).getDayTotal()).toEqual(nDayTotal)
 
         if (!(ix.includes(1) && ix.includes(2)))
-          expect(main.getLunchDiff()).toBeNaN()
-        else expect(main.getLunchDiff()).toEqual(nLunchDiff)
+          expect(DayFunctions.main(props).getLunchDiff()).toBeNaN()
+        else expect(DayFunctions.main(props).getLunchDiff()).toEqual(nLunchDiff)
       })
     })
   })
   describe('onStart', () => {
-    const main = DayFunctions.main()
+    const props = { day: Day.getEmptyDay() }
+    const main = DayFunctions.main(props)
     Array(5)
       .fill(0)
       .map((_v, i) => i)
@@ -86,60 +89,62 @@ describe('DayFunctions', () => {
           for (let i = 0; i < x + 1; i++) onStartSpy()
 
           expect(onStartSpy).toBeCalledTimes(x + 1)
-          expect(main.dayStart.value).toBeTruthy()
+          expect(props.day.day.start).toBeTruthy()
 
-          if (!x) expect(main.lunchStart.value).toBeFalsy()
-          else expect(main.lunchStart.value).toBeTruthy()
+          if (!x) expect(props.day.lunch.start).toBeFalsy()
+          else expect(props.day.lunch.start).toBeTruthy()
         })
       })
   })
   describe('onStop', () => {
-    const main = DayFunctions.main()
+    const props = { day: Day.getEmptyDay() }
+    const main = DayFunctions.main(props)
     Array(5)
       .fill(0)
       .map((_v, i) => i)
       .forEach((x) => {
         test(`run #${x}`, () => {
           const onStopSpy = vi.fn(main.onStop)
-          for (let i = 0; i < x + 1; i++)
-            onStopSpy({ day: Day.createDay('', 5).getDay() })
+          for (let i = 0; i < x + 1; i++) onStopSpy()
 
           expect(onStopSpy).toBeCalledTimes(x + 1)
-          expect(main.lunchStop.value).toBeTruthy()
+          expect(props.day.lunch.stop).toBeTruthy()
 
-          if (!x) expect(main.dayStop.value).toBeFalsy()
-          else expect(main.dayStop.value).toBeTruthy()
+          if (!x) expect(props.day.day.stop).toBeFalsy()
+          else expect(props.day.day.stop).toBeTruthy()
         })
       })
   })
   describe('onStopExact', () => {
     aCombine2.forEach((v, i) => {
       test(`${v.length} - ${i}`, () => {
-        const main = DayFunctions.main()
-        v.forEach((x) => x.f(main))
+        const props = { day: Day.getEmptyDay() }
+        v.forEach((x) => x.f(props))
 
-        const oProps = { day: Day.createDay('', 5).getDay() }
-        main.onStopExact(oProps)
+        DayFunctions.main(props).onStopExact()
 
-        expect(main.dayStop.value).toBeTruthy()
+        expect(props.day.day.stop).toBeTruthy()
 
         if (i == 3)
-          expect(oProps.day.hour.confirmed).toEqual(oProps.day.hour.planned)
-        else expect(oProps.day.hour.confirmed).toBeNaN()
+          expect(props.day.hour.confirmed).toEqual(props.day.hour.planned)
+        else expect(props.day.hour.confirmed).toBeNaN()
       })
     })
   })
   describe('getEstimatedTime', () => {
     aCombine2.forEach((v, i) => {
       test(`${v.length} - ${i}`, () => {
-        const main = DayFunctions.main()
-        v.forEach((x) => x.f(main))
-
-        const oProps = { day: Day.createDay('', 5).getDay() }
+        const props = { day: Day.getEmptyDay() }
+        v.forEach((x) => x.f(props))
 
         if (i == 3)
-          expect(main.getEstimatedTime(oProps).getTime()).not.toBeNaN()
-        else expect(main.getEstimatedTime(oProps).getTime()).toBeNaN()
+          expect(
+            DayFunctions.main(props).getEstimatedTime().getTime(),
+          ).not.toBeNaN()
+        else
+          expect(
+            DayFunctions.main(props).getEstimatedTime().getTime(),
+          ).toBeNaN()
       })
     })
   })
@@ -168,20 +173,34 @@ describe('DayFunctions', () => {
     aCombine2.forEach((v, i) => {
       aDates.forEach((w, j) => {
         test(`${v.length} - ${i} - ${j}`, () => {
-          const main = DayFunctions.main()
-          v.forEach((x) => x.f(main))
+          const props = { day: Day.getEmptyDay() }
+          v.forEach((x) => x.f(props))
 
-          const oProps = { day: Day.createDay('', 0).getDay() }
+          DayFunctions.main(props)._updateDayStop(w)
 
-          main._updateDayStop(oProps, w)
+          expect(props.day.day.stop).toBeTruthy()
+          expect(+props.day.day.stop).toEqual(+w)
 
-          expect(main.dayStop.value).toBeTruthy()
-          expect(+main.dayStop.value!).toEqual(+w)
-
-          if (i == 3) expect(oProps.day.hour.confirmed).not.toBeNaN()
-          else expect(oProps.day.hour.confirmed).toBeNaN()
+          if (i == 3) expect(props.day.hour.confirmed).not.toBeNaN()
+          else expect(props.day.hour.confirmed).toBeNaN()
         })
       })
+    })
+  })
+  describe('', () => {
+    test('Run #1', () => {
+      expect(DayFunctions.isEmpty(new Date(0))).toBeTruthy()
+    })
+    test('Run #2', () => {
+      expect(DayFunctions.isEmpty(new Date(1))).toBeFalsy()
+    })
+    test('Run #3', () => {
+      expect(DayFunctions.isEmpty(new Date(-1))).toBeFalsy()
+    })
+    test('Run #4', () => {
+      const test = {} as { info: Date }
+      expect(test.info).toBeTypeOf('undefined')
+      expect(DayFunctions.isEmpty(test.info)).toBeTruthy()
     })
   })
 })

@@ -1,4 +1,3 @@
-import { ref } from 'vue'
 import { IDayItemEmits, IDayItemFunctions, IDayItemProps } from '../types'
 import { Time } from '../functions'
 
@@ -8,46 +7,41 @@ export const trimSeconds = (date: Date) =>
 export const addHourMinute = (date: Date, hour: number) =>
   +date + hour * 3600000
 
-export const main = () => {
+export const isEmpty = (date: Date) => !date || !date.valueOf()
+
+export const main = (props: IDayItemProps, emits?: IDayItemEmits) => {
   const inside: IDayItemFunctions = {
-    dayStart: ref(undefined as undefined | Date),
-    dayStop: ref(undefined as undefined | Date),
-
-    lunchStart: ref(undefined as undefined | Date),
-    lunchStop: ref(undefined as undefined | Date),
-
     onStart: () => {
-      if (!inside.dayStart.value)
-        inside.dayStart.value = trimSeconds(new Date())
-      else inside.lunchStart.value = trimSeconds(new Date())
+      if (isEmpty(props.day.day.start))
+        props.day.day.start = trimSeconds(new Date())
+      else props.day.lunch.start = trimSeconds(new Date())
+      if (emits) emits('update:day:direct', props.day)
     },
-    onStop: (dayO: IDayItemProps, emits?: IDayItemEmits) => {
-      if (!inside.lunchStop.value)
-        inside.lunchStop.value = trimSeconds(new Date())
-      else inside._updateDayStop(dayO, trimSeconds(new Date()), emits)
+    onStop: () => {
+      if (isEmpty(props.day.lunch.stop))
+        props.day.lunch.stop = trimSeconds(new Date())
+      else inside._updateDayStop(trimSeconds(new Date()))
+      if (emits) emits('update:day:direct', props.day)
     },
-    onStopExact: (dayO: IDayItemProps, emits?: IDayItemEmits) =>
-      inside._updateDayStop(dayO, inside.getEstimatedTime(dayO), emits),
+    onStopExact: () => {
+      inside._updateDayStop(inside.getEstimatedTime())
+      if (emits) emits('update:day:direct', props.day)
+    },
 
-    getLunchDiff: () => +inside.lunchStop.value! - +inside.lunchStart.value!,
+    getLunchDiff: () => +props.day.lunch.stop - +props.day.lunch.start,
     getDayTotal: () =>
-      +inside.dayStop.value! - +inside.dayStart.value! - inside.getLunchDiff(),
-    getEstimatedTime: (dayO: IDayItemProps) =>
+      +props.day.day.stop - +props.day.day.start - inside.getLunchDiff(),
+    getEstimatedTime: () =>
       new Date(
-        addHourMinute(inside.dayStart.value!, dayO.day.hour.planned) +
+        addHourMinute(props.day.day.start, props.day.hour.planned) +
           inside.getLunchDiff(),
       ),
 
-    _updateDayStop: (
-      dayO: IDayItemProps,
-      newDate: Date,
-      emits?: IDayItemEmits,
-    ) => {
-      inside.dayStop.value = newDate
-      dayO.day.hour.confirmed = Time.toNumber(
+    _updateDayStop: (newDate) => {
+      props.day.day.stop = newDate
+      props.day.hour.confirmed = Time.toNumber(
         parseInt(inside.getDayTotal() / 900000 + '') * 0.25,
       )
-      if (emits) emits('update:day:direct', dayO.day)
     },
   }
 

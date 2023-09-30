@@ -11,4 +11,12 @@ export interface IDay {
     name: string
     update: boolean
   }
+  day: {
+    stop: Date
+    start: Date
+  }
+  lunch: {
+    stop: Date
+    start: Date
+  }
 }

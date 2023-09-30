@@ -3,9 +3,6 @@ import { Display } from '../functions'
 import { IDayItemEmits, IDayItemProps } from '../types'
 import { DayFunctions } from '.'
 
-const main = DayFunctions.main()
-const { dayStart, dayStop, lunchStart, lunchStop } = main
-
 defineEmits<IDayItemEmits>()
 defineProps<IDayItemProps>()
 
@@ -35,43 +32,77 @@ const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
       <div class="card-body">
         <template v-if="SHOW_CUSTOM_DEBUG == 'X'">
           <p>{{ $props }}</p>
+          <p>{{ DayFunctions.isEmpty(day.day.start) }} / {{ day.day.start }}</p>
+          <p>{{ DayFunctions.isEmpty(day.day.stop) }} / {{ day.day.stop }}</p>
+          <p>
+            {{ DayFunctions.isEmpty(day.lunch.start) }} / {{ day.lunch.start }}
+          </p>
+          <p>
+            {{ DayFunctions.isEmpty(day.lunch.stop) }} / {{ day.lunch.stop }}
+          </p>
         </template>
         <h5
-          v-if="dayStop && dayStart && lunchStart && lunchStop"
+          v-if="
+            !DayFunctions.isEmpty(day.day.stop) &&
+            !DayFunctions.isEmpty(day.day.start) &&
+            !DayFunctions.isEmpty(day.lunch.start) &&
+            !DayFunctions.isEmpty(day.lunch.stop)
+          "
           class="card-title"
         >
-          {{ Display.showDate(dayStart) }} &Rarr;
-          {{ Display.showDate(dayStop) }} ({{
-            Display.showHourMinuteFromOperation(main.getDayTotal())
+          {{ Display.showDate(day.day.start) }} &Rarr;
+          {{ Display.showDate(day.day.stop) }} ({{
+            Display.showHourMinuteFromOperation(
+              DayFunctions.main($props).getDayTotal(),
+            )
           }})
         </h5>
-        <h5 v-else-if="dayStart && lunchStart && lunchStop" class="card-title">
-          {{ Display.showDate(dayStart) }} &Rarr;
-          <em>{{ Display.showDate(main.getEstimatedTime({ day })) }}</em>
+        <h5
+          v-else-if="
+            !DayFunctions.isEmpty(day.day.start) &&
+            !DayFunctions.isEmpty(day.lunch.start) &&
+            !DayFunctions.isEmpty(day.lunch.stop)
+          "
+          class="card-title"
+        >
+          {{ Display.showDate(day.day.start) }} &Rarr;
+          <em>{{
+            Display.showDate(DayFunctions.main($props).getEstimatedTime())
+          }}</em>
         </h5>
-        <h5 v-else-if="dayStart" class="card-title">
-          {{ Display.showDate(dayStart) }}
+        <h5 v-else-if="!DayFunctions.isEmpty(day.day.start)" class="card-title">
+          {{ Display.showDate(day.day.start) }}
         </h5>
-        <p v-if="lunchStop && lunchStart" class="card-text">
-          {{ Display.showDate(lunchStart) }} &Rarr;
-          {{ Display.showDate(lunchStop) }} ({{
-            Display.showMinuteFromOperation(main.getLunchDiff())
+        <p
+          v-if="
+            !DayFunctions.isEmpty(day.lunch.stop) &&
+            !DayFunctions.isEmpty(day.lunch.start)
+          "
+          class="card-text"
+        >
+          {{ Display.showDate(day.lunch.start) }} &Rarr;
+          {{ Display.showDate(day.lunch.stop) }} ({{
+            Display.showMinuteFromOperation(
+              DayFunctions.main($props).getLunchDiff(),
+            )
           }})
         </p>
-        <p v-else-if="lunchStart" class="card-text">
-          {{ Display.showDate(lunchStart) }}
+        <p v-else-if="!DayFunctions.isEmpty(day.lunch.start)" class="card-text">
+          {{ Display.showDate(day.lunch.start) }}
         </p>
         <div
           v-if="typeof day.hour.confirmed === 'undefined'"
           class="d-flex gap-2 flex-wrap"
         >
           <button
-            v-if="!lunchStart"
+            v-if="DayFunctions.isEmpty(day.lunch.start)"
             class="btn btn-success"
-            @click="main.onStart"
+            @click="DayFunctions.main($props, $emit).onStart"
           >
             <i class="bi bi-play"></i>
-            <span v-if="!dayStart" class="d-none d-md-inline ps-1"
+            <span
+              v-if="DayFunctions.isEmpty(day.day.start)"
+              class="d-none d-md-inline ps-1"
               >Start Day</span
             >
             <span v-else class="d-none d-md-inline ps-1">Start Lunch</span>
@@ -79,24 +110,26 @@ const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
           <button
             v-else
             class="btn btn-danger"
-            @click="() => main.onStop({ day }, $emit)"
+            @click="DayFunctions.main($props, $emit).onStop"
           >
             <i class="bi bi-pause"></i>
-            <span v-if="!lunchStop" class="d-none d-md-inline ps-1"
+            <span
+              v-if="DayFunctions.isEmpty(day.lunch.stop)"
+              class="d-none d-md-inline ps-1"
               >Stop Lunch</span
             >
             <span v-else class="d-none d-md-inline ps-1">Stop Day</span>
           </button>
           <button
-            v-if="lunchStop"
+            v-if="!DayFunctions.isEmpty(day.lunch.stop)"
             class="btn btn-danger"
-            @click="() => main.onStopExact({ day }, $emit)"
+            @click="DayFunctions.main($props, $emit).onStopExact"
           >
             <i class="bi bi-stop"></i>
             <span class="d-none d-md-inline ps-1">Stop Exact</span>
           </button>
           <button
-            v-if="!dayStart"
+            v-if="DayFunctions.isEmpty(day.day.start)"
             class="btn btn-warning"
             @click="$emit('update', day)"
           >
