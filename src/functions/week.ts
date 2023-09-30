@@ -1,4 +1,4 @@
-import { Display, Time } from '.'
+import { Day, Display, Time } from '.'
 import { IDay, IDexieWeek, IWeek } from '../types'
 
 export const createWeek = (hour: number | string) => {
@@ -32,12 +32,23 @@ export const createWeek = (hour: number | string) => {
 }
 
 export const dexieToNormal = (week: IDexieWeek) => {
-  return createWeek(week.hour).setId(week.id).getWeek()
+  return ((): IWeek => ({
+    days: week.days.map((value) =>
+      Day.getEmptyDayManager().setId(value).setWeekId(week.id).getDay(),
+    ),
+    edit: {
+      hour: Display.showHourMinute(Time.toNumber(week.hour)),
+      update: false,
+    },
+    hour: week.hour,
+    id: week.id,
+  }))()
 }
 
 export const normalToDexie = (week: IWeek) => {
   return ((): IDexieWeek => ({
     hour: week.hour,
     id: week.id,
+    days: week.days.map((value) => value.id),
   }))()
 }

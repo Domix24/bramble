@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test } from 'vitest'
 import { createWeek, dexieToNormal, normalToDexie } from './week'
-import { createDay } from './day'
+import { createDay, getEmptyDayManager } from './day'
 import { IDexieWeek } from '../types'
 
 describe('createWeek', () => {
@@ -32,7 +32,7 @@ describe('createWeek', () => {
       expect(week.getWeek().days.length).toEqual(0)
     })
     test('createweek with 1 days - method #1', () => {
-      const week = createWeek('10h').addDay(createDay('a', 1))
+      const week = createWeek('10h').addDay(createDay('a', 1).getDay())
 
       expect(week.getWeek().days.length).toEqual(1)
       expect(week.getWeek().days[0].hour.confirmed).toBeUndefined()
@@ -42,7 +42,7 @@ describe('createWeek', () => {
     })
     test('createweek with 1 days - method #2', () => {
       const week = createWeek('10h')
-      week.addDay(createDay('a', 1))
+      week.addDay(createDay('a', 1).getDay())
 
       expect(week.getWeek().days.length).toEqual(1)
       expect(week.getWeek().days[0].hour.confirmed).toBeUndefined()
@@ -52,8 +52,8 @@ describe('createWeek', () => {
     })
     test('createweek with 2 days - method #1', () => {
       const week = createWeek('10h')
-        .addDay(createDay('a', 1))
-        .addDay(createDay('b', 2))
+        .addDay(createDay('a', 1).getDay())
+        .addDay(createDay('b', 2).getDay())
 
       expect(week.getWeek().days.length).toEqual(2)
       expect(week.getWeek().days[0].hour.confirmed).toBeUndefined()
@@ -65,8 +65,8 @@ describe('createWeek', () => {
       expect(week.getWeek().days[2]).toBeUndefined()
     })
     test('createweek with 2 days - method #2', () => {
-      const week = createWeek('10h').addDay(createDay('a', 1))
-      week.addDay(createDay('b', 2))
+      const week = createWeek('10h').addDay(createDay('a', 1).getDay())
+      week.addDay(createDay('b', 2).getDay())
 
       expect(week.getWeek().days.length).toEqual(2)
       expect(week.getWeek().days[0].hour.confirmed).toBeUndefined()
@@ -79,8 +79,8 @@ describe('createWeek', () => {
     })
     test('createweek with 2 days - method #3', () => {
       const week = createWeek('10h')
-      week.addDay(createDay('a', 1))
-      week.addDay(createDay('b', 2))
+      week.addDay(createDay('a', 1).getDay())
+      week.addDay(createDay('b', 2).getDay())
 
       expect(week.getWeek().days.length).toEqual(2)
       expect(week.getWeek().days[0].hour.confirmed).toBeUndefined()
@@ -135,14 +135,15 @@ describe('createWeek', () => {
   })
 })
 describe('dexieToNormal', () => {
-  let week: IDexieWeek = { hour: 0, id: 0 }
+  let week: IDexieWeek = { hour: 0, id: 0, days: [] }
   let convertedWeek = createWeek(0).getWeek()
   beforeEach(() => {
     const hour = Math.floor(Math.random() * (29 - 20 + 1) + 20) // [29,20]
     const id = Math.floor(Math.random() * (19 - 10 + 1) + 10) // [19,10]
 
-    week = { hour, id }
+    week = { hour, id, days: [] }
 
+    expect(week.days.length).toEqual(0)
     expect(week.hour).toEqual(hour)
     expect(week.id).toEqual(id)
   })
@@ -151,40 +152,69 @@ describe('dexieToNormal', () => {
     .map((_, i) => i + 1)
     .forEach((value) => {
       test(`Run #${value}`, () => {
+        if (value % 2 == 0) {
+          Array(value / 2)
+            .fill(0)
+            .forEach(() => {
+              week.days.push(Math.floor(Math.random() * (39 - 30 + 1) + 30))
+            })
+        }
         convertedWeek = dexieToNormal(week)
       })
     })
   afterEach(() => {
-    expect(convertedWeek.days).toEqual([])
+    expect(convertedWeek.days.length).toEqual(week.days.length)
+    convertedWeek.days.forEach((value, index) => {
+      expect(value.hour.confirmed).toBeUndefined()
+      expect(value.hour.planned).toEqual(0)
+      expect(value.id).toEqual(week.days[index])
+      expect(value.name).toEqual('')
+      expect(value.weekId).toEqual(week.id)
+    })
     expect(convertedWeek.edit.update).toEqual(false)
     expect(convertedWeek.hour).toEqual(week.hour)
     expect(convertedWeek.id).toEqual(week.id)
   })
 })
 describe('normalToDexie', () => {
-  let week = createWeek(0).getWeek()
-  let convertedWeek: IDexieWeek = { hour: 0, id: 0 }
+  let week = createWeek(0)
+  let convertedWeek: IDexieWeek = { hour: 0, id: 0, days: [] }
   beforeEach(() => {
     const hour = Math.floor(Math.random() * (29 - 20 + 1) + 20) // [29,20]
     const id = Math.floor(Math.random() * (19 - 10 + 1) + 10) // [19,10]
 
-    week = createWeek(hour).setId(id).getWeek()
+    week = createWeek(hour).setId(id)
 
-    expect(week.days.length).toEqual(0)
-    expect(week.edit.update).toEqual(false)
-    expect(week.hour).toEqual(hour)
-    expect(week.id).toEqual(id)
+    expect(week.getWeek().days.length).toEqual(0)
+    expect(week.getWeek().edit.update).toEqual(false)
+    expect(week.getWeek().hour).toEqual(hour)
+    expect(week.getWeek().id).toEqual(id)
   })
   Array(10)
     .fill(0)
     .map((_, i) => i + 1)
     .forEach((value) => {
       test(`Run #${value}`, () => {
-        convertedWeek = normalToDexie(week)
+        if (value % 2 == 0) {
+          Array(value / 2)
+            .fill(0)
+            .forEach(() => {
+              const day = getEmptyDayManager()
+              day.setId(Math.floor(Math.random() * (39 - 30 + 1) + 30))
+              day.setWeekId(week.getWeek().id)
+
+              week.addDay(day.getDay())
+            })
+        }
+        convertedWeek = normalToDexie(week.getWeek())
       })
     })
   afterEach(() => {
-    expect(convertedWeek.hour).toEqual(week.hour)
-    expect(convertedWeek.id).toEqual(week.id)
+    expect(convertedWeek.days.length).toEqual(week.getWeek().days.length)
+    convertedWeek.days.forEach((value, index) => {
+      expect(value).toEqual(week.getWeek().days[index].id)
+    })
+    expect(convertedWeek.hour).toEqual(week.getWeek().hour)
+    expect(convertedWeek.id).toEqual(week.getWeek().id)
   })
 })
