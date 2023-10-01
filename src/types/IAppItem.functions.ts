@@ -9,7 +9,7 @@ export interface IAppItemFunctions {
   db: Database.BrambleDatabase
   editWeek: () => void
   //
-  doUpdateWeek: (week: IWeek) => void
+  doUpdateWeek: (week: IWeek, mode: boolean) => void
   doCloseWeek: () => void
   //
   doCreateDay: (week: IWeek) => void

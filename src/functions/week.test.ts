@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test } from 'vitest'
-import { createWeek, dexieToNormal, normalToDexie } from './week'
+import { createWeek, dexieToNormal, normalToDexie, resetDays } from './week'
 import { createDay, getEmptyDayManager } from './day'
-import { IDexieWeek } from '../types'
+import { IDay, IDexieWeek } from '../types'
 
 describe('createWeek', () => {
   test('principal', () => {
@@ -217,4 +217,51 @@ describe('normalToDexie', () => {
     expect(convertedWeek.hour).toEqual(week.getWeek().hour)
     expect(convertedWeek.id).toEqual(week.getWeek().id)
   })
+})
+describe('resetDays', () => {
+  const week = createWeek(3)
+
+  const days: IDay[] = []
+  days.push(createDay('day1', 4).setDayStart(new Date(1)).getDay())
+  days.push(createDay('day2', 7).setDayStop(new Date(2)).getDay())
+  days.push(createDay('day3', 1).setLunchStart(new Date(3)).getDay())
+  days.push(createDay('day4', 2).setLunchStop(new Date(4)).getDay())
+  days.push(
+    createDay('day5', 9)
+      .setDayStart(new Date(1))
+      .setLunchStop(new Date(4))
+      .getDay(),
+  )
+  days.push(
+    createDay('day6', 5)
+      .setDayStop(new Date(2))
+      .setLunchStart(new Date(3))
+      .getDay(),
+  )
+  days.push(
+    createDay('day7', 3)
+      .setDayStart(new Date(1))
+      .setDayStop(new Date(2))
+      .getDay(),
+  )
+  days.push(
+    createDay('day8', 6)
+      .setLunchStart(new Date(3))
+      .setLunchStop(new Date(4))
+      .getDay(),
+  )
+
+  Array(days.length)
+    .fill(0)
+    .map((_, index) => index)
+    .forEach((value) => {
+      test(`Run #${value + 1}`, () => {
+        week.addDay(days[value])
+
+        resetDays(week.getWeek()).days.forEach((day) => {
+          expect(day.day).toBeUndefined()
+          expect(day.lunch).toBeUndefined()
+        })
+      })
+    })
 })

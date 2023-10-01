@@ -22,8 +22,18 @@ export const main = (bypassMount?: boolean) => {
       editWeek(inside.db, Week.normalToDexie(inside.week.value))
     },
     //
-    doUpdateWeek: (week) => {
-      inside.createdWeek.value = week
+    doUpdateWeek: (week, mode) => {
+      if (!mode) inside.createdWeek.value = week
+      else {
+        const week1 = Week.resetDays(week)
+        inside.db.editWeek(Week.normalToDexie(week1)).then(() => {
+          Promise.all(
+            week1.days
+              .map((value) => Day.normalToDexie(value))
+              .map((value) => inside.db.editDay(value)),
+          ).then(() => (inside.week.value = week1))
+        })
+      }
     },
     doCloseWeek: () => {
       if (inside.createdWeek.value && inside.createdWeek.value.edit.update) {
