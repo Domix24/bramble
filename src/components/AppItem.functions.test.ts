@@ -151,7 +151,7 @@ describe('AppFunctions', () => {
 
         expect(main.createdWeek.value).toBeUndefined()
 
-        main.doUpdateWeek(newWeek)
+        main.doUpdateWeek(newWeek, false)
 
         expect(main.createdWeek.value).toBeDefined()
         weekCompare(newWeek, main.createdWeek.value!)

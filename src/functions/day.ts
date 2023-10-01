@@ -175,6 +175,29 @@ export const normalToDexie: (day: IDay) => IDexieDay = (day: IDay) => {
   return inside.get()
 }
 
+export const resetDay = (day: IDay) => {
+  const inside = {
+    normal: {} as IDay,
+    getEdit: () => ({
+      name: Display.showHourMinute(day.hour.planned),
+      hour: day.name,
+      update: false,
+    }),
+    getHour: () => createHour(day.hour.planned),
+    get: () => {
+      inside.normal.edit = inside.getEdit()
+      inside.normal.hour = inside.getHour()
+      inside.normal.id = day.id
+      inside.normal.name = day.name
+      inside.normal.weekId = day.weekId
+
+      return inside.normal
+    },
+  }
+
+  return inside.get()
+}
+
 let emptyDayManager: undefined | InstanceType<typeof DayManager>
 export const getEmptyDayManager = () => {
   if (emptyDayManager) emptyDayManager = undefined

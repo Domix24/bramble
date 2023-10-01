@@ -61,9 +61,13 @@ const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
       }}
     </h1>
     <div class="my-3 d-flex gap-2 flex-wrap">
-      <button class="btn btn-warning" @click="$emit('update', week)">
+      <button class="btn btn-warning" @click="$emit('update', week, false)">
         <i class="bi bi-pencil"></i>
         <span class="d-none d-md-inline ps-1">Edit</span>
+      </button>
+      <button class="btn btn-warning" @click="$emit('update', week, true)">
+        <i class="bi bi-arrow-clockwise"></i>
+        <span class="d-none d-md-inline ps-1">Reset</span>
       </button>
       <button class="btn btn-primary" @click="$emit('create', week)">
         <i class="bi bi-plus"></i>
