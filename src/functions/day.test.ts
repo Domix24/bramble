@@ -7,6 +7,7 @@ import {
   getEmptyDayManager,
   getEmptyDexie,
   normalToDexie,
+  resetDay,
 } from './day'
 import { Display } from '.'
 import { IDay, IDexieDay } from '../types'
@@ -314,5 +315,104 @@ describe('normalToDexie', () => {
     expect(dexie.name).toEqual(expected.name)
     expect(dexie.plannedHour).toEqual(expected.plannedHour)
     expect(dexie.weekId).toEqual(expected.weekId)
+  })
+})
+describe('resetDay', () => {
+  const days: IDay[] = []
+  days.push(
+    getEmptyDayManager()
+      .setDayStart(new Date(1))
+      .setDayStop(new Date(2))
+      .setLunchStart(new Date(3))
+      .setLunchStop(new Date(4))
+      .getDay(),
+  )
+  days.push(
+    getEmptyDayManager()
+      .setDayStart(new Date(1))
+      .setDayStop(new Date(2))
+      .setLunchStart(new Date(3))
+      .getDay(),
+  )
+  days.push(
+    getEmptyDayManager()
+      .setDayStart(new Date(1))
+      .setDayStop(new Date(2))
+      .setLunchStop(new Date(4))
+      .getDay(),
+  )
+  days.push(
+    getEmptyDayManager()
+      .setDayStart(new Date(1))
+      .setLunchStart(new Date(3))
+      .setLunchStop(new Date(4))
+      .getDay(),
+  )
+  days.push(
+    getEmptyDayManager()
+      .setDayStop(new Date(2))
+      .setLunchStart(new Date(3))
+      .setLunchStop(new Date(4))
+      .getDay(),
+  )
+  days.push(
+    getEmptyDayManager()
+      .setDayStart(new Date(1))
+      .setDayStop(new Date(2))
+      .getDay(),
+  )
+  days.push(
+    getEmptyDayManager()
+      .setDayStart(new Date(1))
+      .setLunchStart(new Date(3))
+      .getDay(),
+  )
+  days.push(
+    getEmptyDayManager()
+      .setDayStop(new Date(2))
+      .setLunchStart(new Date(3))
+      .getDay(),
+  )
+  days.push(
+    getEmptyDayManager()
+      .setDayStart(new Date(1))
+      .setLunchStop(new Date(4))
+      .getDay(),
+  )
+  days.push(
+    getEmptyDayManager()
+      .setDayStop(new Date(2))
+      .setLunchStop(new Date(4))
+      .getDay(),
+  )
+  days.push(
+    getEmptyDayManager()
+      .setLunchStart(new Date(3))
+      .setLunchStop(new Date(4))
+      .getDay(),
+  )
+  days.push(getEmptyDayManager().setDayStart(new Date(1)).getDay())
+  days.push(getEmptyDayManager().setDayStop(new Date(2)).getDay())
+  days.push(getEmptyDayManager().setLunchStart(new Date(3)).getDay())
+  days.push(getEmptyDayManager().setLunchStop(new Date(4)).getDay())
+  days.push(getEmptyDayManager().getDay())
+
+  let day: IDay
+  Array(days.length)
+    .fill(0)
+    .map((_, index) => index)
+    .forEach((value) => {
+      test(`Run #${value + 1}`, () => {
+        day = resetDay(days[value])
+      })
+    })
+  afterEach(() => {
+    expect(day.day).toBeUndefined()
+    expect(day.hour.confirmed).toBeUndefined()
+    expect(day.hour.planned).toEqual(0)
+    expect(day.id).toBeUndefined()
+    expect(day.lunch).toBeUndefined()
+    expect(day.name).toEqual('')
+    expect(day.weekId).toEqual(0)
   })
 })

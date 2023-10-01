@@ -52,3 +52,11 @@ export const normalToDexie = (week: IWeek) => {
     days: week.days.map((value) => value.id),
   }))()
 }
+
+export const resetDays = (week: IWeek) => {
+  const weekObject = week
+
+  weekObject.days = week.days.map(Day.resetDay)
+
+  return weekObject
+}
