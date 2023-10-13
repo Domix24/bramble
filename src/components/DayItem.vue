@@ -111,6 +111,7 @@ const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
           <button
             v-if="DayFunctions.isEmpty(day.lunch && day.lunch.start)"
             class="btn btn-success"
+            title="Start"
             @click="DayFunctions.main($props, $emit).onStart"
           >
             <i class="bi bi-play"></i>
@@ -124,6 +125,7 @@ const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
           <button
             v-else
             class="btn btn-danger"
+            title="Stop"
             @click="DayFunctions.main($props, $emit).onStop"
           >
             <i class="bi bi-pause"></i>
@@ -137,6 +139,7 @@ const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
           <button
             v-if="!DayFunctions.isEmpty(day.lunch && day.lunch.stop)"
             class="btn btn-danger"
+            title="Stop Exact"
             @click="DayFunctions.main($props, $emit).onStopExact"
           >
             <i class="bi bi-stop"></i>
@@ -145,6 +148,7 @@ const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
           <button
             v-if="DayFunctions.isEmpty(day.day && day.day.start)"
             class="btn btn-warning"
+            title="Edit"
             @click="$emit('update', day)"
           >
             <i class="bi bi-pencil"></i>
