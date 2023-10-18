@@ -37,7 +37,7 @@
     "happy-dom": "^12.9.1",
     "husky": "^8.0.3",
     "prettier": "^3.0.3",
-    "sass": "^1.69.3",
+    "sass": "^1.69.4",
     "typescript": "^5.2.2",
     "vite": "^4.4.11",
     "vite-plugin-eslint": "^1.8.1",
