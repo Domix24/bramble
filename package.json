@@ -19,7 +19,7 @@
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "dexie": "^4.0.8",
-    "vue": "^3.5.2"
+    "vue": "^3.5.3"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.4.1",
