@@ -34,7 +34,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-vue": "^9.31.0",
-    "happy-dom": "^15.11.6",
+    "happy-dom": "^15.11.7",
     "husky": "^9.1.7",
     "prettier": "^3.4.1",
     "sass": "^1.81.0",
