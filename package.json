@@ -26,7 +26,7 @@
     "@commitlint/config-conventional": "^19.8.1",
     "@types/bootstrap": "^5.2.10",
     "@types/node": "^24.1.0",
-    "@typescript-eslint/eslint-plugin": "^8.37.0",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
     "@typescript-eslint/parser": "^8.38.0",
     "@vitejs/plugin-vue": "^6.0.0",
     "@vue/test-utils": "^2.4.6",
