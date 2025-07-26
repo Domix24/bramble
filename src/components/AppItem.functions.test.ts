@@ -1,11 +1,11 @@
-import { SpyInstance, beforeEach, describe, expect, test, vi } from 'vitest'
+import { MockInstance, beforeEach, describe, expect, test, vi } from 'vitest'
 import { AppFunctions } from '.'
 import { Database, Day, Week } from '../functions'
 import { IAppItemFunctions, IDexieDay, IDexieWeek, IWeek } from '../types'
 import { PromiseExtended } from 'dexie'
 
 const editWeekSpyTest = (
-  spy: SpyInstance<[week: IDexieWeek], PromiseExtended<number>>,
+  spy: MockInstance<(week: IDexieWeek) => PromiseExtended<number>>,
   week: IDexieWeek,
 ) => {
   expect(spy).toBeCalled()
@@ -244,11 +244,11 @@ describe('AppFunctions', () => {
         .map((_, index) => ['doCreateDay', 'doUpdateDay'][index])
         .forEach((value) => {
           describe(`from ${value}`, () => {
-            let daySpy: SpyInstance<[day: IDexieDay], PromiseExtended<number>>
-            let day0Spy: SpyInstance<[id: number], void>
-            let day1Spy: SpyInstance<[], IWeek>
-            let day2Spy: SpyInstance<[week: IWeek], void>
-            let day3Spy: SpyInstance<[], void>
+            let daySpy: MockInstance<(day: IDexieDay) => PromiseExtended<number>>
+            let day0Spy: MockInstance<(id: number) => void>
+            let day1Spy: MockInstance<() => IWeek>
+            let day2Spy: MockInstance<(week: IWeek) => void>
+            let day3Spy: MockInstance<() => void>
 
             beforeEach(() => {
               daySpy = vi.spyOn(main.db, 'editDay').mockResolvedValue(3)
