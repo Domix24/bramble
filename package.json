@@ -22,7 +22,7 @@
     "vue": "^3.5.29"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.4.2",
+    "@commitlint/cli": "^20.4.3",
     "@commitlint/config-conventional": "^20.4.3",
     "@types/bootstrap": "^5.2.10",
     "@types/node": "^25.3.3",
