@@ -6,6 +6,7 @@ const emits = defineEmits<ICreateDayItemEmits>()
 const props = defineProps<ICreateDayItemProps>()
 
 const main = CreateGroup.DayFunctions.main(props, emits)
+// @ts-ignore
 const { formElement, hour, modalElement, name, submitElement } = main
 </script>
 
