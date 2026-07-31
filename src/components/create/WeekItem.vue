@@ -6,6 +6,7 @@ const emits = defineEmits<ICreateWeekItemEmits>()
 const props = defineProps<ICreateWeekItemProps>()
 
 const main = CreateGroup.WeekFunctions.main(props, emits)
+// @ts-ignore
 const { formElement, hour, modalElement, submitElement } = main
 </script>
 
