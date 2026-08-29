@@ -14,7 +14,8 @@ const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
     <p>{{ week }}</p>
     <p>
       {{ WeekFunctions.main($props, $emit).daysC }} /
-      {{ WeekFunctions.main($props, $emit).hourC }}
+      {{ WeekFunctions.main($props, $emit).hourC }} /
+      {{ WeekFunctions.main($props, $emit).differenceRO }}
     </p>
   </template>
   <div class="px-4 py-5 my-5">
@@ -91,6 +92,9 @@ const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
         v-for="(day, index) in WeekFunctions.main($props, $emit).daysC.value"
         :key="index"
         v-model:day="WeekFunctions.main($props, $emit).daysC.value[index]"
+        v-model:difference="
+          WeekFunctions.main($props, $emit).differenceRO.value
+        "
         @update="$emit('update:day', week, day, false)"
         @update:day:direct="$emit('update:day', week, day, true)"
       />

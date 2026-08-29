@@ -64,6 +64,10 @@ const aCombine0 = combinate(aValues0.map((v, i) => ({ f: v, i })))
 const aCombine1 = combinate(aValues1.map((v, i) => ({ f: v, i })))
 const aCombine2 = combinate(aValues2.map((v, i) => ({ f: v, i })))
 
+const aComplete = Array(2).fill(0)
+aComplete[0] = new Date(1694437815643)
+aComplete[1] = new Date(1694491815643)
+
 describe('DayFunctions', () => {
   test('principal', () => {
     expect(DayFunctions).toBeTruthy()
@@ -71,7 +75,7 @@ describe('DayFunctions', () => {
   describe('getLunchDiff', () => {
     aCombine1.forEach((v, i) => {
       test(`${v.length} - ${i}`, () => {
-        const props = { day: Day.getEmptyDay() }
+        const props = { day: Day.getEmptyDay(), difference: 0 }
         v.forEach((x) => x.f(props))
 
         if (v.length < 2)
@@ -83,7 +87,7 @@ describe('DayFunctions', () => {
   describe('getDayTotal', () => {
     aCombine0.forEach((v, i) => {
       test(`${v.length} - ${i}`, () => {
-        const props = { day: Day.getEmptyDay() }
+        const props = { day: Day.getEmptyDay(), difference: 0 }
         v.forEach((x) => x.f(props))
         const ix = v.map((x) => x.i)
 
@@ -98,7 +102,7 @@ describe('DayFunctions', () => {
     })
   })
   describe('onStart', () => {
-    const props = { day: Day.getEmptyDay() }
+    const props = { day: Day.getEmptyDay(), difference: 0 }
     const main = DayFunctions.main(props)
     Array(5)
       .fill(0)
@@ -117,7 +121,7 @@ describe('DayFunctions', () => {
       })
   })
   describe('onStop', () => {
-    const props = { day: Day.getEmptyDay() }
+    const props = { day: Day.getEmptyDay(), difference: 0 }
     const main = DayFunctions.main(props)
     Array(5)
       .fill(0)
@@ -138,7 +142,7 @@ describe('DayFunctions', () => {
   describe('onStopExact', () => {
     aCombine2.forEach((v, i) => {
       test(`${v.length} - ${i}`, () => {
-        const props = { day: Day.getEmptyDay() }
+        const props = { day: Day.getEmptyDay(), difference: 0 }
         v.forEach((x) => x.f(props))
 
         DayFunctions.main(props).onStopExact()
@@ -151,10 +155,26 @@ describe('DayFunctions', () => {
       })
     })
   })
+  describe('onStopComplete', () => {
+    aCombine2.forEach((v, i) => {
+      ;[-i, 0, i, i * 2].forEach((d, ii) => {
+        test(`${v.length} - ${i} - ${d} - ${ii}`, () => {
+          const props = { day: Day.getEmptyDay(), difference: d * 5 }
+          v.forEach((x) => x.f(props))
+
+          DayFunctions.main(props).onStopComplete()
+
+          if (i == 3 && [2, 3].includes(ii))
+            expect(props.day.hour.confirmed).toEqual(d * 5)
+          else expect(props.day.hour.confirmed).toBeNaN()
+        })
+      })
+    })
+  })
   describe('getEstimatedTime', () => {
     aCombine2.forEach((v, i) => {
       test(`${v.length} - ${i}`, () => {
-        const props = { day: Day.getEmptyDay() }
+        const props = { day: Day.getEmptyDay(), difference: 0 }
         v.forEach((x) => x.f(props))
 
         if (i == 3)
@@ -165,6 +185,25 @@ describe('DayFunctions', () => {
           expect(
             DayFunctions.main(props).getEstimatedTime().getTime(),
           ).toBeNaN()
+      })
+    })
+  })
+  describe('getCompleteTime', () => {
+    aCombine2.forEach((v, i) => {
+      ;[-i, 0, i, i * 2].forEach((d, ii) => {
+        test(`${v.length} - ${i} - ${d} - ${ii}`, () => {
+          const props = { day: Day.getEmptyDay(), difference: d * 5 }
+          v.forEach((x) => x.f(props))
+
+          if (i == 3 && [2, 3].includes(ii))
+            expect(
+              DayFunctions.main(props).getCompleteTime().getTime(),
+            ).toEqual(+aComplete[ii - 2])
+          else
+            expect(
+              DayFunctions.main(props).getCompleteTime().getTime(),
+            ).toBeNaN()
+        })
       })
     })
   })
@@ -193,7 +232,7 @@ describe('DayFunctions', () => {
     aCombine2.forEach((v, i) => {
       aDates.forEach((w, j) => {
         test(`${v.length} - ${i} - ${j}`, () => {
-          const props = { day: Day.getEmptyDay() }
+          const props = { day: Day.getEmptyDay(), difference: 0 }
           v.forEach((x) => x.f(props))
 
           DayFunctions.main(props)._updateDayStop(w)

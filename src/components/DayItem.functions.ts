@@ -33,6 +33,10 @@ export const main = (props: IDayItemProps, emits?: IDayItemEmits) => {
       inside._updateDayStop(inside.getEstimatedTime())
       if (emits) emits('update:day:direct', props.day)
     },
+    onStopComplete: () => {
+      inside._updateDayStop(inside.getCompleteTime())
+      if (emits) emits('update:day:direct', props.day)
+    },
 
     getLunchDiff: () =>
       props.day.lunch && props.day.lunch.start && props.day.lunch.stop
@@ -46,6 +50,17 @@ export const main = (props: IDayItemProps, emits?: IDayItemEmits) => {
       props.day.day && props.day.day.start
         ? new Date(
             addHourMinute(props.day.day.start, props.day.hour.planned) +
+              inside.getLunchDiff(),
+          )
+        : new Date(NaN),
+    getCompleteTime: () =>
+      props.day &&
+      props.day.day &&
+      props.day.day.start &&
+      props.difference &&
+      props.difference > 0
+        ? new Date(
+            addHourMinute(props.day.day.start, props.difference) +
               inside.getLunchDiff(),
           )
         : new Date(NaN),

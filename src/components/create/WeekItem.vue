@@ -23,7 +23,12 @@ const { formElement, hour, modalElement, submitElement } = main
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 id="staticBackdropLabel" class="modal-title fs-5">Create</h1>
+          <h1 v-if="week.id" id="staticBackdropLabel" class="modal-title fs-5">
+            Update Week
+          </h1>
+          <h1 v-else id="staticBackdropLabel" class="modal-title fs-5">
+            Create Week
+          </h1>
           <button
             type="button"
             class="btn-close"

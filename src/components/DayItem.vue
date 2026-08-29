@@ -32,6 +32,8 @@ const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
       <div class="card-body">
         <template v-if="SHOW_CUSTOM_DEBUG == 'X'">
           <p>{{ $props }}</p>
+          <p>{{ day }}</p>
+          <p>{{ difference }}</p>
           <p>
             {{ DayFunctions.isEmpty(day.day && day.day.start) }} /
             {{ day.day && day.day.start }}
@@ -84,6 +86,21 @@ const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
         >
           {{ Display.showDate(day.day.start) }}
         </h5>
+        <h6
+          v-if="
+            !DayFunctions.isEmpty(day.day && day.day.start) &&
+            !DayFunctions.isEmpty(day.lunch && day.lunch.start) &&
+            !DayFunctions.isEmpty(day.lunch && day.lunch.stop) &&
+            DayFunctions.isEmpty(day.day && day.day.stop) &&
+            difference &gt 0
+          "
+          class="card-title"
+        >
+          {{ Display.showDate(day.day.start) }} &Rarr;
+          <em>{{
+            Display.showDate(DayFunctions.main($props).getCompleteTime())
+          }}</em>
+        </h6>
         <p
           v-if="
             !DayFunctions.isEmpty(day.lunch && day.lunch.stop) &&
@@ -139,11 +156,24 @@ const SHOW_CUSTOM_DEBUG = import.meta.env.VITE_SHOW_CUSTOM_DEBUG
           <button
             v-if="!DayFunctions.isEmpty(day.lunch && day.lunch.stop)"
             class="btn btn-danger"
-            title="Stop Exact"
+            :title="`Stop (${Display.showHourMinute(day.hour.planned)})`"
             @click="DayFunctions.main($props, $emit).onStopExact"
           >
             <i class="bi bi-stop"></i>
-            <span class="d-none d-md-inline ps-1">Stop Exact</span>
+            <span class="d-none d-md-inline ps-1"
+              >Stop ({{ Display.showHourMinute(day.hour.planned) }})</span
+            >
+          </button>
+          <button
+            v-if="!DayFunctions.isEmpty(day.lunch && day.lunch.stop) && difference &gt; 0"
+            class="btn btn-danger"
+            :title="`Stop (${Display.showHourMinute(difference)})`"
+            @click="DayFunctions.main($props, $emit).onStopComplete"
+          >
+            <i class="bi bi-stop-circle"></i>
+            <span class="d-none d-md-inline ps-1"
+              >Stop ({{ Display.showHourMinute(difference) }})</span
+            >
           </button>
           <button
             v-if="DayFunctions.isEmpty(day.day && day.day.start)"
