@@ -46,7 +46,7 @@ describe('WeekFunctions', () => {
       )
     })
   })
-  describe('getDifference - getSign', () => {
+  describe('getDifference - getSign - getDifferenceSigned', () => {
     const random = (min: number, max: number) =>
       Math.floor(Math.random() * (max - min + 1) + min)
     const list = Array(9)
@@ -71,6 +71,8 @@ describe('WeekFunctions', () => {
           expect(main.getHours() - main.hourC.value).toBeLessThan(0)
           expect(main.getDifference()).toBeGreaterThan(0)
           expect(main.getSign()).toEqual('-')
+          expect(main.getDifferenceSigned()).toBeLessThan(0)
+          expect(main.differenceRO.value).toBeGreaterThan(0)
 
           expect(
             WeekFunctions.getHours(main.daysC.value) - main.hourC.value,
@@ -99,6 +101,8 @@ describe('WeekFunctions', () => {
           expect(main.getHours() - main.hourC.value).toBeGreaterThan(0)
           expect(main.getDifference()).toBeGreaterThan(0)
           expect(main.getSign()).toEqual('+')
+          expect(main.getDifferenceSigned()).toBeGreaterThan(0)
+          expect(main.differenceRO.value).toEqual(0)
 
           expect(
             WeekFunctions.getHours(main.daysC.value) - main.hourC.value,
@@ -125,6 +129,8 @@ describe('WeekFunctions', () => {
           expect(main.getHours() - main.hourC.value).toEqual(0)
           expect(main.getDifference()).toEqual(0)
           expect(main.getSign()).toEqual('-')
+          expect(main.getDifferenceSigned()).toEqual(0)
+          expect(main.differenceRO.value).toEqual(0)
 
           expect(
             WeekFunctions.getHours(main.daysC.value) - main.hourC.value,

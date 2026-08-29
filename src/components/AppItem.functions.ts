@@ -57,6 +57,7 @@ export const main = (bypassMount?: boolean) => {
           .then(inside.doCloseDay1)
           .then(inside.doCloseDay2)
           .then(inside.doCloseDay3)
+      else inside.doCloseDay3()
     },
     doCloseDay0: (id) => {
       inside.createdDay.value!.id = id

@@ -17,10 +17,13 @@ export const getHours = (days: IDay[]) => {
 }
 
 export const getDifference = (days: IDay[], hour: number) =>
-  Math.abs(getHours(days) - hour)
+  Math.abs(getDifferenceSigned(days, hour))
+
+export const getDifferenceSigned = (days: IDay[], hour: number) =>
+  getHours(days) - hour
 
 export const getSign = (days: IDay[], hour: number) =>
-  getHours(days) - hour > 0 ? '+' : '-'
+  getDifferenceSigned(days, hour) > 0 ? '+' : '-'
 
 export const addEmptyDay = (days: IDay[]) => {
   days.push(Day.getEmptyDay())
@@ -47,6 +50,11 @@ export const main = (props: IWeekItemProps, emits: IWeekItemEmits) => {
       },
     }),
 
+    differenceRO: computed(() => {
+      let diff = inside.getDifferenceSigned()
+      return diff < 0 ? diff * -1 : 0
+    }),
+
     getHours: () => {
       return getHours(inside.daysC.value)
     },
@@ -54,6 +62,9 @@ export const main = (props: IWeekItemProps, emits: IWeekItemEmits) => {
     getDifference: () => {
       return getDifference(inside.daysC.value, inside.hourC.value)
     },
+
+    getDifferenceSigned: () =>
+      getDifferenceSigned(inside.daysC.value, inside.hourC.value),
 
     getSign: () => {
       return getSign(inside.daysC.value, inside.hourC.value)
