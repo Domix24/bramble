@@ -1,4 +1,4 @@
-import { Ref, WritableComputedRef } from 'vue'
+import { Ref, WritableComputedRef, ComputedRef } from 'vue'
 import { IDay } from '.'
 
 export interface IWeekItemFunctions {
@@ -8,8 +8,11 @@ export interface IWeekItemFunctions {
   daysC: WritableComputedRef<IDay[]>
   hourC: WritableComputedRef<number>
 
+  differenceRO: ComputedRef<number>
+
   getHours: () => number
   getDifference: () => number
+  getDifferenceSigned: () => number
   getSign: () => '+' | '-'
   emitUpdate: () => void
   addEmptyDay: () => void

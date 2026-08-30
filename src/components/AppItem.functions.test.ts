@@ -244,7 +244,9 @@ describe('AppFunctions', () => {
         .map((_, index) => ['doCreateDay', 'doUpdateDay'][index])
         .forEach((value) => {
           describe(`from ${value}`, () => {
-            let daySpy: MockInstance<(day: IDexieDay) => PromiseExtended<number>>
+            let daySpy: MockInstance<
+              (day: IDexieDay) => PromiseExtended<number>
+            >
             let day0Spy: MockInstance<(id: number) => void>
             let day1Spy: MockInstance<() => IWeek>
             let day2Spy: MockInstance<(week: IWeek) => void>
