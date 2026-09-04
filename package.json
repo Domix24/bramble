@@ -27,7 +27,7 @@
     "@types/bootstrap": "^5.2.11",
     "@types/node": "^26.4.0",
     "@typescript-eslint/eslint-plugin": "^8.68.0",
-    "@typescript-eslint/parser": "^8.68.0",
+    "@typescript-eslint/parser": "^8.69.0",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vue/test-utils": "^2.5.0",
     "eslint": "^10.9.1",
